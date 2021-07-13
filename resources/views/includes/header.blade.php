@@ -19,15 +19,14 @@
                 <li><a href="#" class="nav-link px-2 text-white">About</a></li>
             </ul>
 
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-                <input type="search" class="form-control form-control-dark" placeholder="Search..."
-                    aria-label="Search">
-            </form>
-
+            @if (session('user_id') != null)
+            <a href="/signout" class="btn btn-outline-light me-2">Logout</a>
+            @else
             <div class="text-end">
                 <button type="button" class="btn btn-outline-light me-2">Login</button>
                 <button type="button" class="btn btn-warning">Sign-up</button>
             </div>
+            @endif
         </div>
     </div>
 </header>

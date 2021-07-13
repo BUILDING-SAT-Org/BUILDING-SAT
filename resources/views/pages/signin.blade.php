@@ -3,8 +3,8 @@
 
 
 @section('content')
-    <div class="container bg-light rounded-3 col-md-4">
-        <form method="POST" action="/signIn1" id="reg_form" class="row g-3 justify-content-center">
+    <div class="container bg-light rounded-3 col-md-4" style="margin-top:80px;">
+        <form method="POST" action="/signin" id="reg_form" class="row g-3 justify-content-center">
             <div class="col-md-11">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" name="email" >

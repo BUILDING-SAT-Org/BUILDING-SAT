@@ -21,6 +21,8 @@ class CreateProjectsTable extends Migration
             $table->bigInteger('location_id')->unsigned()->index();
             $table->bigInteger('building_type_id')->unsigned()->index();
             $table->bigInteger('building_form_id')->unsigned()->index();
+            $table->string('name');
+            $table->string('image')->nullable();
             $table->integer('building_life_expectancy');
             $table->float('building_height');
             $table->integer('no_floors');

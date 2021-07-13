@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Session;
 
 class UserController extends Controller
 {
@@ -19,14 +20,14 @@ class UserController extends Controller
             // $admin_user = User::where('id', $request['user_id'])->first();
 
             $user = new User();
-            $user->name = $request['user_name'];
-            $user->user_type = 1; //$request['user_type'];
+            $user->name = $request['name'];
+            $user->user_type = 1;//$request['user_type'];
             $user->email = $request['email'];
-            $user->company = "";//$request['email'];
-            $user->country = "";//$request['country'];
-            $user->city = "";//$request['city'];
-            $user->number = "";//$request['number'];
-            $user->newsletter = 0;//$request['newsletter'];
+            $user->company = $request['company'];
+            $user->country_id = 1;//$request['country'];
+            $user->city = $request['city'];
+            $user->contact_number = $request['number'];
+            $user->subscribed_newletter = 0;//$request['newsletter'];
             $user->role = 0;//$request['role'];
             $user->password = $request['password'];
 
@@ -51,7 +52,6 @@ class UserController extends Controller
                 }else{
                     return redirect('signin', 302)->with('password_incorrect',true);
                 }
-            
         }
     }
 

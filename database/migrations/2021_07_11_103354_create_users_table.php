@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->tinyInteger('user_type');
             $table->string('company');
+            $table->string('city');
             $table->string('contact_number');
             $table->integer('subscribed_newletter');
             $table->timestamp('email_verified_at')->nullable();

@@ -3,104 +3,260 @@
 
 
 @section('content')
-    <div class="container bg-light rounded-3 col-md-4">
-        <form method="POST" action="/signup1" id="reg_form" class="row g-3 justify-content-center" onsubmit="validatePassword()">
-            <div class="col-md-11">
-                <label for="user_name" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="user_name" name="user_name" >
-            </div>
-            <div class="col-md-11">
-                <label for="email" class="form-label">Bussiness Email</label>
-                <input type="email" class="form-control" id="email" name="email" >
-            </div>
-            <div class="col-md-11">
-                <label for="user_type" class="form-label">User Type</label>
-                <select class="form-select" id="user_type" name="user_type" >
-                    <option selected disabled value="">Choose...</option>
-                    <option>Student</option>
-                    <option>Bussiness</option>
-                    <option>Academia</option>
-                </select>
-            </div>
-            <div class="col-md-11">
-                <label for="company" class="form-label">Company / Organization</label>
-                <input type="text" class="form-control" id="company" name="company" >
-            </div>
-            <div class="col-md-11">
-                <label for="number" class="form-label">Phone Number</label>
-                <input type="text" class="form-control" id="number" name="number" >
-            </div>
-            <div class="col-md-11">
-                <label for="country" class="form-label">Country</label>
-                <select class="form-select" id="country" name="country" >
-                    <option selected disabled value="">Choose...</option>
-                    <option>Student</option>
-                    <option>Bussiness</option>
-                    <option>Academia</option>
-                </select>
-            </div>
-            <div class="col-md-11">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password"
-                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" >
-            </div>
-            <div class="col-md-11">
-                <label for="c_password" class="form-label">Confirm Password</label>
-                <input type="password" class="form-control" id="c_password" name="c_password"
-                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" >
-            </div>
-            <div class="col-md-11">
-                <label for="city" class="form-label">City</label>
-                <input type="text" class="form-control" id="city" name="city" >
-            </div>
+    <style>
+        .newsletter-container {}
 
-            <div class="col-11">
-                <p>Want to stay connected with us?</p>
-                <div class="form-check" style="margin-left: 10%;">
-                    <input class="form-check-input" type="radio" name="newsletter" id="newsletter">
-                    <label class="form-check-label" for="newsletter">
-                        Yes, Inform me about newsletter and special offers.
-                    </label>
+        .radio-list {
+            margin: 10px !important;
+        }
+
+    </style>
+
+    <div class="container bg-light rounded-3 col-md-4" style="margin-top:20px;">
+        <div id="app">
+            <form action="/signup" method="POST" enctype="multipart/form-data">
+                <vue-form-generator class="row" tag="div" :schema="schema" :model="model" :options="formOptions">
+                </vue-form-generator>
+                <div class="row" style="justify-content: flex-end;">
+                    <div class="col-md-6">
+                        <button class="btn btn-secondary" v-on:click="cancel">Cancel</button>
+                        <button class="btn btn-warning" type="submit">Create</button>
+                    </div>
                 </div>
-                <div class="form-check" style="margin-left: 10%;">
-                    <input class="form-check-input" type="radio" name="newsletter" id="newsletter_false" checked>
-                    <label class="form-check-label" for="newsletter_false">
-                        No, Thank you I will only receive service emails.
-                    </label>
-                </div>
-            </div>
-            <div class="col-11">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="invalidCheck2" >
-                    <label class="form-check-label" for="invalidCheck2">
-                        Agree to terms and conditions
-                    </label>
-                </div>
-            </div>
-            <div class="col-11">
-                <button class="btn btn-primary" type="submit">Submit form</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 
     <script>
-        function validatePassword() {
-            var validator = $("#reg_form").validate({
-                rules: {
-                    password: "",
-                    confirmpassword: {
-                        equalTo: "#password"
+
+        var vm = new Vue({
+            el: "#app",
+
+            components: {
+                "vue-form-generator": VueFormGenerator.component
+            },
+
+            data() {
+                return {
+                    model: {
+                        id: 1,
+                        name: "45",
+                        email: "45",
+                        user_type: 35,
+                        company: "35",
+                        number: 35,
+                        country: 35,
+                        password: "John Doe",
+                        city: "35ggg",
+                        newsletter: 1,
+                        cpassword: 1,
+                        mpassword: 1,
+                        password_confirm: 1,
+                        password1: "",
+                        password: "",
+                    },
+                    schema: {
+
+                        fields: [{
+                                type: "input",
+                                inputType: "text",
+                                label: "Full Name",
+                                model: "name",
+                                inputName: "name",
+                                readonly: false,
+                                featured: true,
+                                required: true,
+                                disabled: false,
+                                placeholder: "User's name",
+                                styleClasses: 'col-md-6 px-2',
+                                validator: VueFormGenerator.validators.string
+                            },
+                            {
+                                type: "input",
+                                inputType: "email",
+                                label: "Bussiness Email",
+                                model: "email",
+                                inputName: "email",
+                                readonly: false,
+                                featured: true,
+                                required: true,
+                                disabled: false,
+                                placeholder: "User's name",
+                                styleClasses: 'col-md-6 px-2',
+                                validator: VueFormGenerator.validators.string
+                            }, {
+                                type: "select",
+                                label: "User Type",
+                                model: "user_type",
+                                inputName: "user_type",
+                                required: true,
+                                styleClasses: 'col-md-6 px-2',
+                                values: function() {
+                                    return [{
+                                            id: "en-GB",
+                                            name: "English (GB)"
+                                        },
+                                        {
+                                            id: "en-US",
+                                            name: "English (US)"
+                                        },
+                                        {
+                                            id: "de",
+                                            name: "German"
+                                        },
+                                        {
+                                            id: "it",
+                                            name: "Italic"
+                                        },
+                                        {
+                                            id: "fr",
+                                            name: "French"
+                                        }
+                                    ]
+                                },
+                                default: "en-US",
+                                validator: VueFormGenerator.validators.required
+                            },
+                            {
+                                type: "input",
+                                inputType: "text",
+                                label: "Company / Organization",
+                                model: "company",
+                                inputName: "company",
+                                readonly: false,
+                                featured: true,
+                                required: true,
+                                disabled: false,
+                                placeholder: "User's name",
+                                styleClasses: 'col-md-6 px-2',
+                                validator: VueFormGenerator.validators.string
+                            }, {
+                                type: "input",
+                                inputType: "number",
+                                label: "Phone Number",
+                                model: "number",
+                                inputName: "number",
+                                min: 18,
+                                validator: VueFormGenerator.validators.number,
+                                styleClasses: 'col-md-6 px-2',
+                            }, {
+                                type: "select",
+                                label: "Country",
+                                model: "country",
+                                inputName: "country",
+                                required: true,
+                                styleClasses: 'col-md-6 px-2',
+                                values: function() {
+                                    return [{
+                                            id: "en-GB",
+                                            name: "English (GB)"
+                                        },
+                                        {
+                                            id: "en-US",
+                                            name: "English (US)"
+                                        },
+                                        {
+                                            id: "de",
+                                            name: "German"
+                                        },
+                                        {
+                                            id: "it",
+                                            name: "Italic"
+                                        },
+                                        {
+                                            id: "fr",
+                                            name: "French"
+                                        }
+                                    ]
+                                },
+                                default: "en-US",
+                                validator: VueFormGenerator.validators.required
+                            }, {
+                                type: "input",
+                                inputType: "password",
+                                label: "Password",
+                                model: "password",
+                                inputName: "password",
+                                min: 5,
+                                validator: VueFormGenerator.validators.password,
+                                styleClasses: 'col-md-6 px-2',
+                            }, {
+                                type: "input",
+                                inputType: "password",
+                                label: "Confirm Password",
+                                model: "cpassword",
+                                inputName: "password",
+                                min: 5,
+                                equals: 'password',
+                                validator: ['string', isEqualTo],
+                                styleClasses: 'col-md-6 px-2',
+                            }, {
+                                type: "input",
+                                inputType: "text",
+                                label: "City",
+                                model: "city",
+                                inputName: "city",
+                                validator: VueFormGenerator.validators.string,
+                                styleClasses: 'col-md-6 px-2',
+                            },
+                            {
+                                type: "radios",
+                                label: "Want to stay connected with us?",
+                                model: "newsletter",
+                                inputName: "newsletter",
+                                values: [
+                                    "Yes, inform me about newsletter and special offers.",
+                                    "No, thank you I will receive only service emails.",
+                                ],
+                                styleClasses: 'newsletter-container'
+                            }
+                        ]
+                    },
+
+                    formOptions: {
+                        validateAfterLoad: true,
+                        validateAfterChanged: true
                     }
+                };
+            },
+
+            mounted() {
+                $(".preview").css(
+                    "background-image",
+                    "url(http://localhost.bsat.com/storage/user/1/projects/4/Screenshot%20from%202021-06-27%2009-13-36.png)"
+                );
+            },
+
+            methods: {
+                cancel: function() {
+                    console.log('cancel');
                 },
-                messages: {
-                    password: " Enter Password",
-                    confirmpassword: " Enter Confirm Password Same as Password"
+                createProject: function() {
+                    console.log('createProject');
+                    var form_data = new FormData();
+                    var data_model = vm.model;
+                    for (var key in data_model) {
+                        form_data.append(key, data_model[key]);
+                    }
+
+                    console.log(vm.model);
+                    postData('/projects/' + vm.model.id, form_data)
+                        .then(data => {
+                            console.log(data); // JSON data parsed by `data.json()` call
+                        });
                 }
-            });
-            if (validator.form()) {
-                alert('Sucess');
-            }
+            },
+        });
+
+        function isEqualTo(value, field, model) {
+            if (field.equals == undefined)
+                return ['invalid field schema, missing `equals` property'];
+            let a = model[field.equals];
+            if (value == a)
+                return [];
+            return ['strings do not match'];
         }
+
     </script>
 
 @stop
