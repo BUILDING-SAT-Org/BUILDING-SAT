@@ -277,6 +277,171 @@
             }
         ];
 
+
+        function site_clearence_schema(field) {
+
+            return {
+                fields: [{
+                    type: "input",
+                    inputType: "number",
+                    label: "Quantity(&#13221;)",
+                    model: "quanitity",
+                    help: "This is an other longer help text",
+                    styleClasses: 'vgf-input-fixed',
+                    required: true,
+                    validator: VueFormGenerator.validators.number,
+                }, {
+                    type: "awesome",
+                    label: "Difficulty Level",
+                    model: "difficulty_level",
+                    help: "This is an other longer help text",
+                    styleClasses: 'bsat-tree-select',
+                    required: true,
+                    values: function() {
+                        return field.dropdown;
+                    },
+                    onChanged: function(model, newVal, oldVal, field, schema) {
+                        console.log(
+                            `Model's name changed from ${oldVal} to ${newVal}. Model:`,
+                            model)
+                        console.log(newVal.replacable)
+                        model.category = "Fruit"
+                    }
+                }, {
+                    type: "awesome",
+                    label: "Machinery",
+                    model: "machine_type",
+                    help: "This is an other longer help text",
+                    styleClasses: 'bsat-tree-select',
+                    required: true,
+                    values: function() {
+                        console.log('oopppp')
+                        console.log(dropdown)
+                        return dropdown
+                    },
+                    onChanged: function(model, newVal, oldVal, field, schema) {
+                        console.log(
+                            `Model's name changed from ${oldVal} to ${newVal}. Model:`,
+                            model)
+                        console.log(newVal.replacable)
+                        model.category = "Fruit"
+                    }
+                }, {
+                    type: "input",
+                    inputType: "number",
+                    label: "Machine Hours",
+                    model: "machine_hours",
+                    help: "This is an other longer help text",
+                    styleClasses: 'vgf-input-fixed',
+                    required: true,
+                    validator: VueFormGenerator.validators.number,
+                }, {
+                    type: "input",
+                    inputType: "number",
+                    label: "CO2e(kg)",
+                    model: "machinery_co2e",
+                    help: "This is an other longer help text",
+                    styleClasses: 'vgf-input-fixed',
+                    readonly: true,
+                }, {
+                    type: "radios",
+                    label: "Spoil Transported Outside",
+                    model: "spoil_transported_outside",
+                    values: [{
+                            name: "Yes",
+                            value: 1
+                        },
+                        {
+                            name: "No",
+                            value: 0
+                        },
+                    ],
+                    help: "This is an other longer help text",
+                    styleClasses: 'col-md-12 display-inline',
+                    required: true,
+                }, {
+                    type: "input",
+                    inputType: "number",
+                    label: "Total Quantity",
+                    model: "total_quantity",
+                    min: 1,
+                    help: "This is an other longer help text",
+                    styleClasses: 'vgf-input-fixed',
+                    required: true,
+                    validator: VueFormGenerator.validators.number,
+                    visible: function(model) {
+                        return model && model.spoil_transported_outside;
+                    }
+                }, {
+                    type: "awesome",
+                    label: "Mode of Transport",
+                    model: "mode_of_transport",
+                    help: "This is an other longer help text",
+                    styleClasses: 'bsat-tree-select',
+                    required: true,
+                    values: function() {
+                        console.log('oopppp')
+                        console.log(dropdown)
+                        return dropdown
+                    },
+                    onChanged: function(model, newVal, oldVal, field, schema) {
+                        console.log(
+                            `Model's name changed from ${oldVal} to ${newVal}. Model:`,
+                            model)
+                        console.log(newVal.replacable)
+                        model.category = "Fruit"
+                    },
+                    visible: function(model) {
+                        return model && model.spoil_transported_outside;
+                    }
+                }, {
+                    type: "awesome",
+                    label: "Unloading Destination",
+                    model: "unloading_destination",
+                    styleClasses: 'bsat-tree-select',
+                    help: "This is an other longer help text",
+                    required: true,
+                    values: function() {
+                        console.log('oopppp')
+                        console.log(dropdown)
+                        return dropdown
+                    },
+                    onChanged: function(model, newVal, oldVal, field) {
+                        model.name = "" + newVal;
+                        console.log(
+                            `Model's name changed from ${oldVal} to ${newVal}. Model:`,
+                            model);
+                    },
+                    visible: function(model) {
+                        return model && model.spoil_transported_outside;
+                    }
+                }, {
+                    type: "input",
+                    inputType: "number",
+                    label: "Total Distance",
+                    model: "total_distance",
+                    help: "This is an other longer help text",
+                    styleClasses: 'vgf-input-fixed',
+                    readonly: true,
+                    visible: function(model) {
+                        return model && model.spoil_transported_outside;
+                    }
+                }, {
+                    type: "input",
+                    inputType: "number",
+                    label: "CO2e (kg)",
+                    model: "transport_co2e",
+                    help: "This is an other longer help text",
+                    styleClasses: 'vgf-input-fixed',
+                    readonly: true,
+                    visible: function(model) {
+                        return model && model.spoil_transported_outside;
+                    }
+                }]
+            }
+        }
+
+
         Vue.component('form-textarea3', {
             template: '#form-textarea3',
             props: ['field'],
@@ -285,7 +450,7 @@
             },
 
             data: function() {
-                var field = this.field;
+                // var xx = this.field.dropdown;
                 return {
                     model: {
                         is_updated: 0,
@@ -303,165 +468,7 @@
                         transport_co2e: 0,
                         total: 0
                     },
-                    schema: {
-                        fields: [{
-                            type: "input",
-                            inputType: "number",
-                            label: "Quantity(&#13221;)",
-                            model: "quanitity",
-                            help: "This is an other longer help text",
-                            styleClasses: 'vgf-input-fixed',
-                            required: true,
-                            validator: VueFormGenerator.validators.number,
-                        }, {
-                            type: "awesome",
-                            label: "Difficulty Level",
-                            model: "difficulty_level",
-                            help: "This is an other longer help text",
-                            styleClasses: 'bsat-tree-select',
-                            required: true,
-                            values: function() {
-                                return field.dropdown;
-                            },
-                            onChanged: function(model, newVal, oldVal, field, schema) {
-                                console.log(
-                                    `Model's name changed from ${oldVal} to ${newVal}. Model:`,
-                                    model)
-                                console.log(newVal.replacable)
-                                model.category = "Fruit"
-                            }
-                        }, {
-                            type: "awesome",
-                            label: "Machinery",
-                            model: "machine_type",
-                            help: "This is an other longer help text",
-                            styleClasses: 'bsat-tree-select',
-                            required: true,
-                            values: function() {
-                                console.log('oopppp')
-                                console.log(dropdown)
-                                return dropdown
-                            },
-                            onChanged: function(model, newVal, oldVal, field, schema) {
-                                console.log(
-                                    `Model's name changed from ${oldVal} to ${newVal}. Model:`,
-                                    model)
-                                console.log(newVal.replacable)
-                                model.category = "Fruit"
-                            }
-                        }, {
-                            type: "input",
-                            inputType: "number",
-                            label: "Machine Hours",
-                            model: "machine_hours",
-                            help: "This is an other longer help text",
-                            styleClasses: 'vgf-input-fixed',
-                            required: true,
-                            validator: VueFormGenerator.validators.number,
-                        }, {
-                            type: "input",
-                            inputType: "number",
-                            label: "CO2e(kg)",
-                            model: "machinery_co2e",
-                            help: "This is an other longer help text",
-                            styleClasses: 'vgf-input-fixed',
-                            readonly: true,
-                        }, {
-                            type: "radios",
-                            label: "Spoil Transported Outside",
-                            model: "spoil_transported_outside",
-                            values: [{
-                                    name: "Yes",
-                                    value: 1
-                                },
-                                {
-                                    name: "No",
-                                    value: 0
-                                },
-                            ],
-                            help: "This is an other longer help text",
-                            styleClasses: 'col-md-12 display-inline',
-                            required: true,
-                        }, {
-                            type: "input",
-                            inputType: "number",
-                            label: "Total Quantity",
-                            model: "total_quantity",
-                            min: 1,
-                            help: "This is an other longer help text",
-                            styleClasses: 'vgf-input-fixed',
-                            required: true,
-                            validator: VueFormGenerator.validators.number,
-                            visible: function(model) {
-                                return model && model.spoil_transported_outside;
-                            }
-                        }, {
-                            type: "awesome",
-                            label: "Mode of Transport",
-                            model: "mode_of_transport",
-                            help: "This is an other longer help text",
-                            styleClasses: 'bsat-tree-select',
-                            required: true,
-                            values: function() {
-                                console.log('oopppp')
-                                console.log(dropdown)
-                                return dropdown
-                            },
-                            onChanged: function(model, newVal, oldVal, field, schema) {
-                                console.log(
-                                    `Model's name changed from ${oldVal} to ${newVal}. Model:`,
-                                    model)
-                                console.log(newVal.replacable)
-                                model.category = "Fruit"
-                            },
-                            visible: function(model) {
-                                return model && model.spoil_transported_outside;
-                            }
-                        }, {
-                            type: "awesome",
-                            label: "Unloading Destination",
-                            model: "unloading_destination",
-                            styleClasses: 'bsat-tree-select',
-                            help: "This is an other longer help text",
-                            required: true,
-                            values: function() {
-                                console.log('oopppp')
-                                console.log(dropdown)
-                                return dropdown
-                            },
-                            onChanged: function(model, newVal, oldVal, field) {
-                                model.name = "" + newVal;
-                                console.log(
-                                    `Model's name changed from ${oldVal} to ${newVal}. Model:`,
-                                    model);
-                            },
-                            visible: function(model) {
-                                return model && model.spoil_transported_outside;
-                            }
-                        }, {
-                            type: "input",
-                            inputType: "number",
-                            label: "Total Distance",
-                            model: "total_distance",
-                            help: "This is an other longer help text",
-                            styleClasses: 'vgf-input-fixed',
-                            readonly: true,
-                            visible: function(model) {
-                                return model && model.spoil_transported_outside;
-                            }
-                        }, {
-                            type: "input",
-                            inputType: "number",
-                            label: "CO2e (kg)",
-                            model: "transport_co2e",
-                            help: "This is an other longer help text",
-                            styleClasses: 'vgf-input-fixed',
-                            readonly: true,
-                            visible: function(model) {
-                                return model && model.spoil_transported_outside;
-                            }
-                        }]
-                    },
+                    schema: site_clearence_schema(this.field),
                     formOptions: {
                         validateAfterLoad: true,
                         validateAfterChanged: true
@@ -498,25 +505,9 @@
                 addFormElement: function() {
                     this.$parent.$emit('addFormElement2');
                 },
-                async modall(url) {
-                    await $.ajax({
-                        url: "/projects/" + 1,
-                        type: "GET",
-                        headers: {
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ),
-                        },
-                        complete: function complete() {},
-                        success: function success(result) {
-                            console.log('result');
-                            console.log(result);
-                            // populate_projects(result);
-                        },
-                        error: function error() {
-                            console.log("error");
-                        }
-                    });
+                modall(url) {
+                    console.log('eeeeeeeeee');
+                    console.log(url);
                 },
                 node_value(node) {
                     console.log('node');

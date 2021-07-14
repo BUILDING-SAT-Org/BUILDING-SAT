@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Projects;
+use App\Models\BsatSubphases;
 
 class EarthWorksController extends Controller
 {
@@ -19,6 +20,18 @@ class EarthWorksController extends Controller
             } else {
                 return redirect('/dashboard');
             }
+        } catch (\Throwable $th) {
+            return redirect('/dashboard');
+        }
+    }
+
+    public function get_difficulty_levels(Request $request)
+    {
+        try {
+            $site_clearence = BsatSubphases::where('id',1)->get();
+$ss=0;
+
+
         } catch (\Throwable $th) {
             return redirect('/dashboard');
         }
