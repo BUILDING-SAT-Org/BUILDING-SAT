@@ -454,7 +454,7 @@
                         clickToSelect: false,
                         formatter: function(value, row, index) {
                             return '<a target="_blank" href="/project/' + row.user_id + '/' + row.id +
-                                '/siteclearence">Link</a>';
+                                '/earthworks">Link</a>';
                         }
                     },
                     {
