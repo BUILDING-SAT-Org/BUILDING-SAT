@@ -15,7 +15,7 @@ class CreateBsatDifficultyLevelsTable extends Migration
     {
         Schema::create('bsat_difficulty_levels', function (Blueprint $table) {
             $table->id();
-            $table->string('difficulty_level');
+            $table->string('name');
             $table->bigInteger('bsat_subphase_id')->unsigned()->index();
             $table->float('difficulty_factor');
             $table->float('bulk_density');

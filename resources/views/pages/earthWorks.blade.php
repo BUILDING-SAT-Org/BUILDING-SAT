@@ -108,6 +108,11 @@
             margin-bottom: 10px;
         }
 
+        .bsat-accordion-lg {
+            width: 1390px;
+            margin-bottom: 10px;
+        }
+
         .bsat-accordion-item {
             width: 210px;
         }
@@ -174,6 +179,26 @@
     </template>
 
     <script>
+        var resources;
+        (async function() {
+            await $.ajax({
+                url: "/earthworks/resources",
+                type: "GET",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content"
+                    ),
+                },
+                complete: function complete() {},
+                success: function success(result) {
+                    resources = result;
+                },
+                error: function error() {
+                    console.log("error");
+                }
+            });
+        })();
+
         Vue.component('treeselect', VueTreeselect.Treeselect);
         var dropdown = [{
                 "id": 1,
@@ -299,6 +324,8 @@
                         total_quantity: 0,
                         mode_of_transport: 0,
                         unloading_destination: "93",
+                        other_location: "93",
+                        other_location_distance: 2,
                         total_distance: 2,
                         transport_co2e: 0,
                         total: 0
@@ -314,14 +341,14 @@
                             required: true,
                             validator: VueFormGenerator.validators.number,
                         }, {
-                            type: "awesome",
+                            type: "select",
                             label: "Difficulty Level",
                             model: "difficulty_level",
                             help: "This is an other longer help text",
                             styleClasses: 'bsat-tree-select',
                             required: true,
                             values: function() {
-                                return field.dropdown;
+                                return field.difficulty_level;
                             },
                             onChanged: function(model, newVal, oldVal, field, schema) {
                                 console.log(
@@ -338,9 +365,7 @@
                             styleClasses: 'bsat-tree-select',
                             required: true,
                             values: function() {
-                                console.log('oopppp')
-                                console.log(dropdown)
-                                return dropdown
+                                return field.machines;
                             },
                             onChanged: function(model, newVal, oldVal, field, schema) {
                                 console.log(
@@ -403,9 +428,7 @@
                             styleClasses: 'bsat-tree-select',
                             required: true,
                             values: function() {
-                                console.log('oopppp')
-                                console.log(dropdown)
-                                return dropdown
+                                return field.vehicles;
                             },
                             onChanged: function(model, newVal, oldVal, field, schema) {
                                 console.log(
@@ -418,16 +441,14 @@
                                 return model && model.spoil_transported_outside;
                             }
                         }, {
-                            type: "awesome",
+                            type: "select",
                             label: "Unloading Destination",
                             model: "unloading_destination",
                             styleClasses: 'bsat-tree-select',
                             help: "This is an other longer help text",
                             required: true,
                             values: function() {
-                                console.log('oopppp')
-                                console.log(dropdown)
-                                return dropdown
+                                return field.destinations;
                             },
                             onChanged: function(model, newVal, oldVal, field) {
                                 model.name = "" + newVal;
@@ -436,7 +457,52 @@
                                     model);
                             },
                             visible: function(model) {
+
                                 return model && model.spoil_transported_outside;
+                            }
+                        }, {
+                            type: "input",
+                            inputType: "text",
+                            label: "Location",
+                            model: "other_location",
+                            min: 1,
+                            help: "This is an other longer help text",
+                            styleClasses: 'vgf-input-fixed',
+                            required: true,
+                            validator: VueFormGenerator.validators.number,
+                            visible: function(model) {
+                                if (model && model.spoil_transported_outside && model
+                                    .unloading_destination == 1) {
+                                    $('accordionSiteClearence').removeClass('bsat-accordion');
+                                    $('accordionSiteClearence').addClass('bsat-accordion-lg');
+                                } else {
+                                    $('accordionSiteClearence').addClass('bsat-accordion');
+                                    $('accordionSiteClearence').removeClass('bsat-accordion-lg');
+                                }
+                                return model && model.spoil_transported_outside && model
+                                    .unloading_destination == 1;
+                            }
+                        }, {
+                            type: "input",
+                            inputType: "number",
+                            label: "Distance",
+                            model: "other_location_distance",
+                            min: 1,
+                            help: "This is an other longer help text",
+                            styleClasses: 'vgf-input-fixed',
+                            required: true,
+                            validator: VueFormGenerator.validators.number,
+                            visible: function(model) {
+                                if (model && model.spoil_transported_outside && model
+                                    .unloading_destination == 1) {
+                                    $('#accordionSiteClearence').removeClass('bsat-accordion');
+                                    $('#accordionSiteClearence').addClass('bsat-accordion-lg');
+                                } else {
+                                    $('#accordionSiteClearence').addClass('bsat-accordion');
+                                    $('#accordionSiteClearence').removeClass('bsat-accordion-lg');
+                                }
+                                return model && model.spoil_transported_outside && model
+                                    .unloading_destination == 1;
                             }
                         }, {
                             type: "input",
@@ -470,7 +536,7 @@
             },
 
             mounted() {
-                this.modall('url');
+
                 this.$on('modall', this.modall);
                 this.$on('node_value', this.node_value);
             },
@@ -498,26 +564,6 @@
                 addFormElement: function() {
                     this.$parent.$emit('addFormElement2');
                 },
-                async modall(url) {
-                    await $.ajax({
-                        url: "/projects/" + 1,
-                        type: "GET",
-                        headers: {
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ),
-                        },
-                        complete: function complete() {},
-                        success: function success(result) {
-                            console.log('result');
-                            console.log(result);
-                            // populate_projects(result);
-                        },
-                        error: function error() {
-                            console.log("error");
-                        }
-                    });
-                },
                 node_value(node) {
                     console.log('node');
                     console.log(node);
@@ -530,22 +576,31 @@
             el: '#app4',
             data: {
                 fields: [],
-                count: 0
+                count: 0,
+                difficulty_level: []
             },
             mounted() {
                 this.$on('removeFormElement', this.removeFormElement);
                 this.$on('addFormElement2', this.addFormElement2);
+                this.getDifficultyLevels(this.difficulty_level);
+                // getResources();
             },
             methods: {
                 addFormElement2: function() {
-                    console.log('ssssss')
+                    console.log('mmmmmmmmm')
                     this.fields.push({
                         'type': 'form-textarea3',
                         'id': this.count++,
-                        'dropdown': dropdown
+                        'dropdown': dropdown,
+                        'difficulty_level': resources.site_clearence_difficulty,
+                        'destinations': resources.destinations,
+                        'machines': resources.machinery,
+                        'vehicles': resources.vehicles,
                     })
-                    console.log(this.count)
-                    console.log(this.fields)
+                    // console.log(this.count)
+                    console.log(this.data)
+                    // console.log(this.fields)
+                    console.log('mmmmmmmmm')
                 },
                 addFormElement5: function(type) {
                     console.log('zzz')
@@ -579,7 +634,29 @@
                     console.log(total)
 
                     return resp;
-                }
+                },
+                async getDifficultyLevels(difficulty_level) {
+                    await $.ajax({
+                        url: "/earthworks/difficulty/siteclearence",
+                        type: "GET",
+                        headers: {
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                                "content"
+                            ),
+                        },
+                        complete: function complete() {},
+                        success: function success(result) {
+                            console.log('resueeeeeeeeeeeeeeeeelt');
+                            console.log(result);
+                            difficulty_level.push(result);
+                            // this.data = result;
+                            // populate_projects(result);
+                        },
+                        error: function error() {
+                            console.log("error");
+                        }
+                    });
+                },
             }
         })
     </script>
