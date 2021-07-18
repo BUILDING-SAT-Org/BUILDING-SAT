@@ -74,6 +74,7 @@
 
     <script>
         var user_id = {{ session('user_id') }};
+        var project_id = {{session('project_id')}};
         var vm = new Vue({
             el: "#app",
 

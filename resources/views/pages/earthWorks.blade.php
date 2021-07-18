@@ -156,7 +156,8 @@
                         <div id="app4">
                             <div v-for="field in fields" v-bind:is="field.type" :key="field.id" :field="field">
                             </div>
-                            <button class="btn btn-outline-primary bsat-entry-btn" v-on:click="addFormElement2">Add
+                            <button id="add_entry_btn" class="btn btn-outline-primary bsat-entry-btn"
+                                v-on:click="addFormElement2">Add
                                 Entry</button>
                         </div>
                     </div>
@@ -172,17 +173,19 @@
             </div>
             <div>
                 <vue-form-generator :schema="schema" :model="model" :options="formOptions" tag="div"
-                    @model-updated="onModelUpdated">
+                    @model-updated="onModelUpdated" @validated="onValidated">
                 </vue-form-generator>
             </div>
         </div>
     </template>
 
     <script>
+        var user_id = {{ session('user_id') }};
+        var project_id = {{ session('project_id') }};
         var resources;
         (async function() {
             await $.ajax({
-                url: "/earthworks/resources",
+                url: "/earthworks/resources/" + user_id + "/" + project_id,
                 type: "GET",
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
@@ -200,107 +203,6 @@
         })();
 
         Vue.component('treeselect', VueTreeselect.Treeselect);
-        var dropdown = [{
-                "id": 1,
-                "label": "Category1 😍",
-                "children": [{
-                        "id": 1,
-                        "name": "Category1 😍",
-                        "created_at": null,
-                        "updated_at": null,
-                        "is_salvage": 1,
-                        "is_replaceable": 1,
-                        "categories_id": 1,
-                        "label": "Mat2 Cat1"
-                    },
-                    {
-                        "id": 2,
-                        "name": "Category1 😍",
-                        "created_at": null,
-                        "updated_at": null,
-                        "is_salvage": 1,
-                        "is_replaceable": 1,
-                        "categories_id": 1,
-                        "label": "Mat Cat1"
-                    }
-                ]
-            },
-            {
-                "id": 2,
-                "label": "Category2",
-                "children": [{
-                        "id": 3,
-                        "name": "Category2",
-                        "created_at": null,
-                        "updated_at": null,
-                        "is_salvage": 0,
-                        "is_replaceable": 1,
-                        "categories_id": 2,
-                        "label": "Mat Cat2"
-                    },
-                    {
-                        "id": 4,
-                        "name": "Category2",
-                        "created_at": null,
-                        "updated_at": null,
-                        "is_salvage": 0,
-                        "is_replaceable": 1,
-                        "categories_id": 2,
-                        "label": "Mat2 Cat2"
-                    }
-                ]
-            },
-            {
-                "id": 3,
-                "label": "Category3",
-                "children": [{
-                        "id": 5,
-                        "name": "Category3",
-                        "created_at": null,
-                        "updated_at": null,
-                        "is_salvage": 1,
-                        "is_replaceable": 0,
-                        "categories_id": 3,
-                        "label": "Mat Cat3"
-                    },
-                    {
-                        "id": 6,
-                        "name": "Category3",
-                        "created_at": null,
-                        "updated_at": null,
-                        "is_salvage": 1,
-                        "is_replaceable": 0,
-                        "categories_id": 3,
-                        "label": "Mat2 Cat3"
-                    }
-                ]
-            },
-            {
-                "id": 4,
-                "label": "Category4",
-                "children": [{
-                        "id": 7,
-                        "name": "Category4",
-                        "created_at": null,
-                        "updated_at": null,
-                        "is_salvage": 0,
-                        "is_replaceable": 0,
-                        "categories_id": 4,
-                        "label": "Mat Cat4"
-                    },
-                    {
-                        "id": 8,
-                        "name": "Category4",
-                        "created_at": null,
-                        "updated_at": null,
-                        "is_salvage": 0,
-                        "is_replaceable": 0,
-                        "categories_id": 4,
-                        "label": "Mat2 Cat4"
-                    }
-                ]
-            }
-        ];
 
         Vue.component('form-textarea3', {
             template: '#form-textarea3',
@@ -316,19 +218,24 @@
                         is_updated: 0,
                         is_new: 0,
                         quanitity: 1,
-                        difficulty_level: '',
-                        machine_type: '',
-                        machine_hours: 35,
+                        difficulty_level: 0,
+                        machine_type: 1,
+                        machine_hours: 1,
                         machinery_co2e: 0,
                         spoil_transported_outside: 0,
                         total_quantity: 0,
-                        mode_of_transport: 0,
-                        unloading_destination: "93",
-                        other_location: "93",
-                        other_location_distance: 2,
-                        total_distance: 2,
+                        mode_of_transport: 1,
+                        unloading_destination: 2,
+                        other_location: "Location",
+                        other_location_distance: 100,
+                        total_distance: 0,
                         transport_co2e: 0,
-                        total: 0
+                        total_co2e: 0,
+                        data: {
+                            difficulty_data: 1,
+                            machine_data: 1,
+                            transport_data: 1,
+                        }
                     },
                     schema: {
                         fields: [{
@@ -340,6 +247,20 @@
                             styleClasses: 'vgf-input-fixed',
                             required: true,
                             validator: VueFormGenerator.validators.number,
+                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+
+                                let bulking_factor = this.model.data.difficulty_data.bulking_factor == undefined ? 1 :
+                                this.model.data.difficulty_data.bulking_factor;
+
+                                let bulk_density = this.model.data.difficulty_data.bulk_density == undefined ? 1 :
+                                this.model.data.difficulty_data.bulk_density;
+
+                                let total_quantity = this.model.quanitity * 0.2 * bulking_factor * bulk_density;
+
+                                this.model.total_quantity = total_quantity;
+
+                                this.$parent.$parent.$parent.$emit("calculate", this);
+                            }
                         }, {
                             type: "select",
                             label: "Difficulty Level",
@@ -350,12 +271,20 @@
                             values: function() {
                                 return field.difficulty_level;
                             },
-                            onChanged: function(model, newVal, oldVal, field, schema) {
-                                console.log(
-                                    `Model's name changed from ${oldVal} to ${newVal}. Model:`,
-                                    model)
-                                console.log(newVal.replacable)
-                                model.category = "Fruit"
+                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                                model.data.difficulty_data = field.values().filter(i => i.id ==
+                                    newVal)[0]
+
+                                let bulking_factor = this.model.data.difficulty_data.bulking_factor == undefined ? 1 :
+                                this.model.data.difficulty_data.bulking_factor;
+
+                                let bulk_density = this.model.data.difficulty_data.bulk_density == undefined ? 1 :
+                                this.model.data.difficulty_data.bulk_density;
+
+                                let total_quantity = this.model.quanitity * 0.2 * bulking_factor * bulk_density;
+
+                                this.model.total_quantity = total_quantity;
+                                this.$parent.$parent.$parent.$emit("calculate", this);
                             }
                         }, {
                             type: "awesome",
@@ -368,11 +297,9 @@
                                 return field.machines;
                             },
                             onChanged: function(model, newVal, oldVal, field, schema) {
-                                console.log(
-                                    `Model's name changed from ${oldVal} to ${newVal}. Model:`,
-                                    model)
-                                console.log(newVal.replacable)
-                                model.category = "Fruit"
+                                model.data.machine_data = field.values().filter(i => i.id ==
+                                    newVal)[0]
+                                this.$parent.$parent.$parent.$emit("calculate", this);
                             }
                         }, {
                             type: "input",
@@ -383,6 +310,9 @@
                             styleClasses: 'vgf-input-fixed',
                             required: true,
                             validator: VueFormGenerator.validators.number,
+                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                                this.$parent.$parent.$parent.$emit("calculate", this);
+                            }
                         }, {
                             type: "input",
                             inputType: "number",
@@ -407,6 +337,9 @@
                             help: "This is an other longer help text",
                             styleClasses: 'col-md-12 display-inline',
                             required: true,
+                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                                this.$parent.$parent.$parent.$emit("calculate", this);
+                            }
                         }, {
                             type: "input",
                             inputType: "number",
@@ -417,6 +350,9 @@
                             styleClasses: 'vgf-input-fixed',
                             required: true,
                             validator: VueFormGenerator.validators.number,
+                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                                this.$parent.$parent.$parent.$emit("calculate", this);
+                            },
                             visible: function(model) {
                                 return model && model.spoil_transported_outside;
                             }
@@ -427,15 +363,16 @@
                             help: "This is an other longer help text",
                             styleClasses: 'bsat-tree-select',
                             required: true,
+                            valueFormat: "object",
                             values: function() {
                                 return field.vehicles;
                             },
                             onChanged: function(model, newVal, oldVal, field, schema) {
-                                console.log(
-                                    `Model's name changed from ${oldVal} to ${newVal}. Model:`,
-                                    model)
-                                console.log(newVal.replacable)
-                                model.category = "Fruit"
+
+                                model.data.transport_data = field.values().filter(i => i.id ==
+                                    newVal)[0]
+
+                                this.$parent.$parent.$parent.$emit("calculate", this);
                             },
                             visible: function(model) {
                                 return model && model.spoil_transported_outside;
@@ -451,10 +388,7 @@
                                 return field.destinations;
                             },
                             onChanged: function(model, newVal, oldVal, field) {
-                                model.name = "" + newVal;
-                                console.log(
-                                    `Model's name changed from ${oldVal} to ${newVal}. Model:`,
-                                    model);
+                                this.$parent.$parent.$parent.$emit("calculate", this);
                             },
                             visible: function(model) {
 
@@ -470,6 +404,9 @@
                             styleClasses: 'vgf-input-fixed',
                             required: true,
                             validator: VueFormGenerator.validators.number,
+                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                                this.$parent.$parent.$parent.$emit("calculate", this);
+                            },
                             visible: function(model) {
                                 if (model && model.spoil_transported_outside && model
                                     .unloading_destination == 1) {
@@ -492,6 +429,9 @@
                             styleClasses: 'vgf-input-fixed',
                             required: true,
                             validator: VueFormGenerator.validators.number,
+                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                                this.$parent.$parent.$parent.$emit("calculate", this);
+                            },
                             visible: function(model) {
                                 if (model && model.spoil_transported_outside && model
                                     .unloading_destination == 1) {
@@ -512,6 +452,9 @@
                             help: "This is an other longer help text",
                             styleClasses: 'vgf-input-fixed',
                             readonly: true,
+                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                                this.$parent.$parent.$parent.$emit("calculate", this);
+                            },
                             visible: function(model) {
                                 return model && model.spoil_transported_outside;
                             }
@@ -523,6 +466,9 @@
                             help: "This is an other longer help text",
                             styleClasses: 'vgf-input-fixed',
                             readonly: true,
+                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                                this.$parent.$parent.$parent.$emit("calculate", this);
+                            },
                             visible: function(model) {
                                 return model && model.spoil_transported_outside;
                             }
@@ -536,28 +482,16 @@
             },
 
             mounted() {
-
-                this.$on('modall', this.modall);
                 this.$on('node_value', this.node_value);
+                this.$on('itemInfo', this.itemInfo);
+                this.$on('calculate', this.calculate);
             },
 
             methods: {
                 onModelUpdated(newVal, schema) {
                     this.model.is_updated = 1;
-                    console.log(newVal, schema, this.model);
-                    console.log('newVal, schema');
-
-                    if (schema == "fastest") {
-                        if (newVal == 46) {
-                            this.schema.fields[8].values = store.state.data2
-                        } else {
-                            this.schema.fields[8].values = store.state.data3
-                        }
-                    }
                 },
                 removeFormElement: function() {
-                    console.log("this.$vnode.key")
-                    console.log(this.$vnode.key)
                     const id = this.$vnode.key;
                     this.$parent.$emit('removeFormElement', id);
                 },
@@ -565,8 +499,71 @@
                     this.$parent.$emit('addFormElement2');
                 },
                 node_value(node) {
-                    console.log('node');
                     console.log(node);
+                },
+                itemInfo(node) {
+                    console.log(node);
+                },
+                calculate() {
+
+                    let difficulty_factor = this.model.data.difficulty_data.difficulty_factor == undefined ? 1 :
+                        this.model.data.difficulty_data.difficulty_factor;
+
+                    let bulking_factor = this.model.data.difficulty_data.bulking_factor == undefined ? 1 :
+                        this.model.data.difficulty_data.bulking_factor;
+
+                    let bulk_density = this.model.data.difficulty_data.bulk_density == undefined ? 1 :
+                        this.model.data.difficulty_data.bulk_density;
+
+                    let machine_gwp = this.model.data.machine_data.gwp == undefined ? 1 :
+                        this.model.data.machine_data.gwp;
+
+                    let transport_gwp = this.model.data.transport_data.gwp == undefined ? 1 :
+                        this.model.data.transport_data.gwp;
+
+                    let loading_capacity = this.model.data.transport_data.loading_capacity == undefined ? 1 :
+                        this.model.data.transport_data.loading_capacity;
+
+                    this.model.machinery_co2e = this.model.machine_hours * difficulty_factor * machine_gwp;
+
+                    if (this.model.spoil_transported_outside) {
+
+                        // let total_quantity = this.model.quanitity * 0.2 * bulking_factor * bulk_density;
+
+                        // this.model.total_quantity = total_quantity;
+
+                        let distance_to_destination;
+                        if (this.model.unloading_destination == 1) {
+
+                            distance_to_destination = this.model.other_location_distance;
+
+                        } else {
+
+                            distance_to_destination = resources.distances.filter(i => i.destination_id == this.model.unloading_destination)[0].distance;
+
+                        }
+                        let no_trips = this.model.total_quantity / loading_capacity;
+
+                        let total_distance = distance_to_destination * no_trips;
+                        
+                        this.model.total_distance = total_distance;
+
+                        this.model.transport_co2e = this.model.total_quantity * distance_to_destination * transport_gwp;
+
+                        this.total_co2e = this.model.machinery_co2e + this.model.transport_co2e;
+
+                    } else {
+                        this.total_co2e = this.model.machinery_co2e;
+                    }
+
+                },
+                onValidated(isValid, errors) {
+
+                    $('#add_entry_btn').prop('disabled', true)
+
+                    if (isValid) {
+                        $('#add_entry_btn').prop('disabled', false)
+                    }
                 }
             },
         });
@@ -587,23 +584,16 @@
             },
             methods: {
                 addFormElement2: function() {
-                    console.log('mmmmmmmmm')
                     this.fields.push({
                         'type': 'form-textarea3',
                         'id': this.count++,
-                        'dropdown': dropdown,
                         'difficulty_level': resources.site_clearence_difficulty,
                         'destinations': resources.destinations,
                         'machines': resources.machinery,
                         'vehicles': resources.vehicles,
                     })
-                    // console.log(this.count)
-                    console.log(this.data)
-                    // console.log(this.fields)
-                    console.log('mmmmmmmmm')
                 },
                 addFormElement5: function(type) {
-                    console.log('zzz')
                     store.setData([{
                         name: "Sebastian Vettel",
                         id: "5",
@@ -611,7 +601,6 @@
                     }])
                 },
                 removeFormElement: function(id) {
-                    console.log('rrrrrrffffrrrrrr')
                     const index = this.fields.findIndex(f => f.id === id);
 
                     this.fields.splice(index, 1);
@@ -629,9 +618,6 @@
                         "models": models
                     }
                     const updatedModels = models.filter(item => item.is_updated);
-                    console.log(updatedModels);
-                    console.log(models)
-                    console.log(total)
 
                     return resp;
                 },
@@ -646,11 +632,7 @@
                         },
                         complete: function complete() {},
                         success: function success(result) {
-                            console.log('resueeeeeeeeeeeeeeeeelt');
-                            console.log(result);
                             difficulty_level.push(result);
-                            // this.data = result;
-                            // populate_projects(result);
                         },
                         error: function error() {
                             console.log("error");

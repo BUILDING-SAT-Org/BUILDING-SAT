@@ -48,4 +48,4 @@ Route::delete('/projects/{user_id}/{project_id}', [ProjectController::class, 'de
 Route::get('/project/{user_id}/{project_id}/earthworks', [EarthWorksController::class, 'get_earthworks']);
 Route::get('/earthworks/difficulty', [EarthWorksController::class, 'get_difficulty_levels']);
 Route::get('/earthworks/difficulty/siteclearence', [EarthWorksController::class, 'get_difficulty_level_site_clearence']);
-Route::get('/earthworks/resources', [EarthWorksController::class, 'get_resources']);
+Route::get('/earthworks/resources/{user_id}/{project_id}', [EarthWorksController::class, 'get_resources']);

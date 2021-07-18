@@ -8,6 +8,7 @@ use App\Models\BsatDifficultyLevels;
 use App\Models\Locations;
 use App\Models\BsatMachines;
 use App\Models\BsatVehicles;
+use App\Models\BsatDistances;
 
 class EarthWorksController extends Controller
 {
@@ -18,7 +19,7 @@ class EarthWorksController extends Controller
             $project = Projects::find($request['project_id']);
     
             if ($project != null && $project->user_id == $request['user_id']) {
-                $request->session()->put('project', $project);
+                $request->session()->put('project_id', $project->id);
                 return view('pages.earthWorks');
             } else {
                 return redirect('/dashboard');
@@ -69,12 +70,17 @@ class EarthWorksController extends Controller
             $machinery = BsatMachines::all();
             $vehicles = BsatVehicles::all();
 
+            $project = Projects::find($request['project_id']);
+
+            $distances = BsatDistances::where('origin_id',$project->location_id)->get();
+
             $resp = array(
                 'site_clearence_difficulty'=>$site_clearence_difficulty,
                 'soil_excavation_difficulty'=>$soil_excavation_difficulty,
                 'destinations'=>$destinations,
                 'machinery'=>$machinery,
                 'vehicles'=>$vehicles,
+                'distances'=>$distances
             );
 
             return response($resp, 200)

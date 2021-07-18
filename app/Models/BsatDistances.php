@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class BsatDistances extends Model
 {
     use HasFactory;
+
+    protected $hidden = ['created_at', 'updated_at'];
 }
