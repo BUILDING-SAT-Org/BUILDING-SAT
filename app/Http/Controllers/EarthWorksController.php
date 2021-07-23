@@ -9,6 +9,7 @@ use App\Models\Locations;
 use App\Models\BsatMachines;
 use App\Models\BsatVehicles;
 use App\Models\BsatDistances;
+use App\Models\UserEarthworkEntry;
 
 class EarthWorksController extends Controller
 {
@@ -89,4 +90,73 @@ class EarthWorksController extends Controller
         //     return redirect('/dashboard');
         // }
     }
+
+
+    public function save_earthworks(Request $request)
+    {
+        try {
+            $project = Projects::find($request['project_id']);
+    
+            if ($project != null && $project->user_id == $request['user_id']) {
+                // $request->session()->put('project_id', $project->id);
+
+                $new_entries = $request['new_entries'];
+                $updated_entries = $request['updated_entries'];
+
+                foreach ($new_entries as $key => $new_entry) {
+
+                    $entry = new UserEarthworkEntry();
+                    $entry->project_id = $request['project_id'];
+                    $entry->subphase_id = $request["sub_phase"];
+                    $entry->quantity = $new_entry["quantity"];
+                    $entry->difficulty_level_id = $new_entry["difficulty_level_id"];
+                    $entry->machinery_id = $new_entry["machinery_id"];
+                    $entry->machine_hours = $new_entry["machine_hours"];
+                    $entry->machinery_co2e = $new_entry["machinery_co2e"];
+                    $entry->machinery_co2e_label = $new_entry["machinery_co2e_label"];
+                    $entry->spoil_transported_outside = $new_entry["spoil_transported_outside"];
+                    $entry->total_quantity = $new_entry["total_quantity"];
+                    $entry->spoil_transport_vehicle_id = $new_entry["spoil_transport_vehicle_id"];
+                    $entry->location_id = $new_entry["location_id"];
+                    $entry->other_location = $new_entry["other_location"];
+                    $entry->other_location_distance = $new_entry["other_location_distance"];
+                    $entry->total_distance = $new_entry["total_distance"];
+                    $entry->transport_co2e = $new_entry["transport_co2e"];
+                    $entry->transport_co2e_label = $new_entry["transport_co2e_label"];
+                    $entry->total_co2e = $new_entry["total_co2e"];
+                    $entry->data = $new_entry["data"];
+
+                    $entry->save();
+
+                }
+                
+            } else {
+                
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+
+    public function get_earthworks_entries(Request $request)
+    {
+        try {
+            $project = Projects::find($request['project_id']);
+    
+            if ($project != null && $project->user_id == $request['user_id']) {
+
+                $entries = UserEarthworkEntry::where('project_id',$request['project_id'])->get();
+                return response($entries, 200)
+
+            ->header('Content-Type', 'application/json');
+            } else {
+                return response(401)
+                ->header('Content-Type', 'application/json');
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
 }

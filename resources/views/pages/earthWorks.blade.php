@@ -138,6 +138,7 @@
 
     </style>
     <h1>{{ session('user_id') }}</h1>
+    <button type="button" onclick="save_data()">Save</button>
     <div class="row">
         <div class="col-md-12">
             <div class="accordion bsat-accordion" id="accordionSiteClearence">
@@ -178,7 +179,7 @@
             </div>
         </div>
     </template>
-
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         var user_id = {{ session('user_id') }};
         var project_id = {{ session('project_id') }};
@@ -215,21 +216,24 @@
                 var field = this.field;
                 return {
                     model: {
+                        id: 0,
                         is_updated: 0,
-                        is_new: 0,
-                        quanitity: 1,
-                        difficulty_level: 0,
-                        machine_type: 1,
+                        is_new: 1,
+                        quantity: 1,
+                        difficulty_level_id: 0,
+                        machinery_id: 1,
                         machine_hours: 1,
                         machinery_co2e: 0,
+                        machinery_co2e_label: 0,
                         spoil_transported_outside: 0,
                         total_quantity: 0,
-                        mode_of_transport: 1,
-                        unloading_destination: 2,
+                        spoil_transport_vehicle_id: 1,
+                        location_id: 2,
                         other_location: "Location",
                         other_location_distance: 100,
                         total_distance: 0,
                         transport_co2e: 0,
+                        transport_co2e_label: 0,
                         total_co2e: 0,
                         data: {
                             difficulty_data: 1,
@@ -242,29 +246,35 @@
                             type: "input",
                             inputType: "number",
                             label: "Quantity(&#13221;)",
-                            model: "quanitity",
+                            model: "quantity",
                             help: "This is an other longer help text",
                             styleClasses: 'vgf-input-fixed',
                             required: true,
                             validator: VueFormGenerator.validators.number,
                             onChanged: function(model, newVal, oldVal, field, schema, details) {
 
-                                let bulking_factor = this.model.data.difficulty_data.bulking_factor == undefined ? 1 :
-                                this.model.data.difficulty_data.bulking_factor;
+                                let bulking_factor = this.model.data.difficulty_data
+                                    .bulking_factor == undefined ? 1 :
+                                    this.model.data.difficulty_data.bulking_factor;
 
-                                let bulk_density = this.model.data.difficulty_data.bulk_density == undefined ? 1 :
-                                this.model.data.difficulty_data.bulk_density;
+                                let bulk_density = this.model.data.difficulty_data.bulk_density ==
+                                    undefined ? 1 :
+                                    this.model.data.difficulty_data.bulk_density;
 
-                                let total_quantity = this.model.quanitity * 0.2 * bulking_factor * bulk_density;
+                                let total_quantity = this.model.quantity * 0.2 * bulking_factor *
+                                    bulk_density;
 
-                                this.model.total_quantity = total_quantity;
+                                this.model.total_quantity = truncateFloat(total_quantity, 2);
+
+                                console.log(total_quantity)
+                                console.log('mmmk')
 
                                 this.$parent.$parent.$parent.$emit("calculate", this);
                             }
                         }, {
                             type: "select",
                             label: "Difficulty Level",
-                            model: "difficulty_level",
+                            model: "difficulty_level_id",
                             help: "This is an other longer help text",
                             styleClasses: 'bsat-tree-select',
                             required: true,
@@ -272,24 +282,28 @@
                                 return field.difficulty_level;
                             },
                             onChanged: function(model, newVal, oldVal, field, schema, details) {
+
                                 model.data.difficulty_data = field.values().filter(i => i.id ==
                                     newVal)[0]
 
-                                let bulking_factor = this.model.data.difficulty_data.bulking_factor == undefined ? 1 :
-                                this.model.data.difficulty_data.bulking_factor;
+                                let bulking_factor = this.model.data.difficulty_data
+                                    .bulking_factor == undefined ? 1 :
+                                    this.model.data.difficulty_data.bulking_factor;
 
-                                let bulk_density = this.model.data.difficulty_data.bulk_density == undefined ? 1 :
-                                this.model.data.difficulty_data.bulk_density;
+                                let bulk_density = this.model.data.difficulty_data.bulk_density ==
+                                    undefined ? 1 :
+                                    this.model.data.difficulty_data.bulk_density;
 
-                                let total_quantity = this.model.quanitity * 0.2 * bulking_factor * bulk_density;
+                                let total_quantity = this.model.quantity * 0.2 * bulking_factor *
+                                    bulk_density;
 
-                                this.model.total_quantity = total_quantity;
+                                this.model.total_quantity = truncateFloat(total_quantity, 2);
                                 this.$parent.$parent.$parent.$emit("calculate", this);
                             }
                         }, {
                             type: "awesome",
                             label: "Machinery",
-                            model: "machine_type",
+                            model: "machinery_id",
                             help: "This is an other longer help text",
                             styleClasses: 'bsat-tree-select',
                             required: true,
@@ -315,9 +329,9 @@
                             }
                         }, {
                             type: "input",
-                            inputType: "number",
+                            inputType: "text",
                             label: "CO2e(kg)",
-                            model: "machinery_co2e",
+                            model: "machinery_co2e_label",
                             help: "This is an other longer help text",
                             styleClasses: 'vgf-input-fixed',
                             readonly: true,
@@ -346,6 +360,7 @@
                             label: "Total Quantity",
                             model: "total_quantity",
                             min: 1,
+                            step: 0.01,
                             help: "This is an other longer help text",
                             styleClasses: 'vgf-input-fixed',
                             required: true,
@@ -359,7 +374,7 @@
                         }, {
                             type: "awesome",
                             label: "Mode of Transport",
-                            model: "mode_of_transport",
+                            model: "spoil_transport_vehicle_id",
                             help: "This is an other longer help text",
                             styleClasses: 'bsat-tree-select',
                             required: true,
@@ -380,7 +395,7 @@
                         }, {
                             type: "select",
                             label: "Unloading Destination",
-                            model: "unloading_destination",
+                            model: "location_id",
                             styleClasses: 'bsat-tree-select',
                             help: "This is an other longer help text",
                             required: true,
@@ -403,13 +418,13 @@
                             help: "This is an other longer help text",
                             styleClasses: 'vgf-input-fixed',
                             required: true,
-                            validator: VueFormGenerator.validators.number,
+                            validator: VueFormGenerator.validators.string,
                             onChanged: function(model, newVal, oldVal, field, schema, details) {
                                 this.$parent.$parent.$parent.$emit("calculate", this);
                             },
                             visible: function(model) {
                                 if (model && model.spoil_transported_outside && model
-                                    .unloading_destination == 1) {
+                                    .location_id == 1) {
                                     $('accordionSiteClearence').removeClass('bsat-accordion');
                                     $('accordionSiteClearence').addClass('bsat-accordion-lg');
                                 } else {
@@ -417,7 +432,7 @@
                                     $('accordionSiteClearence').removeClass('bsat-accordion-lg');
                                 }
                                 return model && model.spoil_transported_outside && model
-                                    .unloading_destination == 1;
+                                    .location_id == 1;
                             }
                         }, {
                             type: "input",
@@ -434,7 +449,7 @@
                             },
                             visible: function(model) {
                                 if (model && model.spoil_transported_outside && model
-                                    .unloading_destination == 1) {
+                                    .location_id == 1) {
                                     $('#accordionSiteClearence').removeClass('bsat-accordion');
                                     $('#accordionSiteClearence').addClass('bsat-accordion-lg');
                                 } else {
@@ -442,7 +457,7 @@
                                     $('#accordionSiteClearence').removeClass('bsat-accordion-lg');
                                 }
                                 return model && model.spoil_transported_outside && model
-                                    .unloading_destination == 1;
+                                    .location_id == 1;
                             }
                         }, {
                             type: "input",
@@ -460,9 +475,9 @@
                             }
                         }, {
                             type: "input",
-                            inputType: "number",
+                            inputType: "text",
                             label: "CO2e (kg)",
-                            model: "transport_co2e",
+                            model: "transport_co2e_label",
                             help: "This is an other longer help text",
                             styleClasses: 'vgf-input-fixed',
                             readonly: true,
@@ -524,36 +539,48 @@
                     let loading_capacity = this.model.data.transport_data.loading_capacity == undefined ? 1 :
                         this.model.data.transport_data.loading_capacity;
 
-                    this.model.machinery_co2e = this.model.machine_hours * difficulty_factor * machine_gwp;
-
+                    this.model.machinery_co2e = truncateFloat(this.model.machine_hours * difficulty_factor *
+                        machine_gwp, 2);
+                    this.model.machinery_co2e_label = parseExponential(this.model.machinery_co2e);
+                    console.log(this.model.machinery_co2e)
                     if (this.model.spoil_transported_outside) {
 
-                        // let total_quantity = this.model.quanitity * 0.2 * bulking_factor * bulk_density;
+                        // let total_quantity = this.model.quantity * 0.2 * bulking_factor * bulk_density;
 
                         // this.model.total_quantity = total_quantity;
 
                         let distance_to_destination;
-                        if (this.model.unloading_destination == 1) {
+                        if (this.model.location_id == 1) {
 
                             distance_to_destination = this.model.other_location_distance;
 
                         } else {
 
-                            distance_to_destination = resources.distances.filter(i => i.destination_id == this.model.unloading_destination)[0].distance;
+                            distance_to_destination = resources.distances.filter(i => i.destination_id == this.model.location_id)[0].distance;
+                            this.model.other_location = "";
+                            this.model.other_location_distance = 0;
 
                         }
                         let no_trips = this.model.total_quantity / loading_capacity;
 
                         let total_distance = distance_to_destination * no_trips;
-                        
-                        this.model.total_distance = total_distance;
 
-                        this.model.transport_co2e = this.model.total_quantity * distance_to_destination * transport_gwp;
+                        this.model.total_distance = truncateFloat(total_distance, 2);
 
-                        this.total_co2e = this.model.machinery_co2e + this.model.transport_co2e;
+                        this.model.transport_co2e = truncateFloat(this.model.total_quantity *
+                            distance_to_destination *
+                            transport_gwp, 2);
+
+                        console.log(this.model.transport_co2e)
+
+                        this.model.transport_co2e_label = parseExponential(this.model.transport_co2e);
+
+
+                        this.model.total_co2e = truncateFloat(this.model.machinery_co2e + this.model.transport_co2e,
+                            2);
 
                     } else {
-                        this.total_co2e = this.model.machinery_co2e;
+                        this.model.total_co2e = truncateFloat(this.model.machinery_co2e, 2);
                     }
 
                 },
@@ -581,6 +608,33 @@
                 this.$on('addFormElement2', this.addFormElement2);
                 this.getDifficultyLevels(this.difficulty_level);
                 // getResources();
+
+                axios.get('/project/1/3/earthworks/entries')
+                    .then(response => {
+                        console.log(response.data);
+                        this.generateModels(response.data);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                // $.ajax({
+                //     url: "/project/1/3/earthworks/entries",
+                //     type: "GET",
+                //     headers: {
+                //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                //             "content"
+                //         ),
+                //     },
+                //     complete: function complete() {},
+                //     success: function success(response) {
+                //         console.log(response);
+                //         this.generateModels(response);
+                //     },
+                //     error: function error() {
+                //         console.log("error");
+                //     }
+                // });
+
             },
             methods: {
                 addFormElement2: function() {
@@ -605,19 +659,40 @@
 
                     this.fields.splice(index, 1);
                 },
+                generateModels: function(models) {
+                    console.log(models)
+                    models.forEach((model) => {
+                        this.fields.push({
+                            'type': 'form-textarea3',
+                            'id': this.count++,
+                            'model': model,
+                            'difficulty_level': resources.site_clearence_difficulty,
+                            'destinations': resources.destinations,
+                            'machines': resources.machinery,
+                            'vehicles': resources.vehicles,
+                        })
+                    })
+                },
                 getModals: function() {
-                    var total = 0;
+                    let total_machinery_co2e = 0;
+                    let total_transport_co2e = 0;
 
-                    var models = this.$children.map(function(child) {
-                        total = total + child.model.quanitity;
+                    let models = this.$children.map(function(child) {
+                        total_machinery_co2e = total_machinery_co2e + child.model.machinery_co2e;
+                        total_transport_co2e = total_transport_co2e + child.model.transport_co2e;
                         return child.model;
                     });
 
-                    var resp = {
-                        "total": total,
-                        "models": models
+                    const updatedModels = models.filter(item => item.is_updated && !item.is_new);
+                    const newModels = models.filter(item => item.is_new);
+
+                    let resp = {
+                        "sub_phase": 1,
+                        "total_machinery_co2e": total_machinery_co2e,
+                        "total_transport_co2e": total_transport_co2e,
+                        "new_entries": newModels,
+                        "updated_entries": updatedModels,
                     }
-                    const updatedModels = models.filter(item => item.is_updated);
 
                     return resp;
                 },
@@ -641,6 +716,49 @@
                 },
             }
         })
+
+        async function save_data() {
+            var site_clearence_data = site_clearence.getModals();
+            console.log(site_clearence_data)
+
+            await $.ajax({
+                url: "/project/" + user_id + "/" + project_id + "/earthworks",
+                type: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                },
+                contentType: 'application/json',
+                data: JSON.stringify(site_clearence_data),
+                dataType: "json",
+                complete: function complete() {
+                    console.log("save_data complete");
+                },
+                success: function success(result) {
+                    console.log("save_data success");
+                },
+                error: function error() {
+                    console.log("error");
+                }
+            });
+        }
+
+        // function truncateFloat(float, n) {
+        //     var num = ((float * n) / n).toFixed(2);
+        //     return parseFloat(num);
+        // }
+
+        //TODO:: check for value conversions
+        function parseExponential(number) {
+            return (number).toExponential(2);
+        }
+
+        function truncateFloat(str, val) {
+            str = str.toString();
+            if (str.indexOf(".") != -1) {
+                str = str.slice(0, (str.indexOf(".")) + val + 1);
+            }
+            return Number(str);
+        }
     </script>
 
 @stop
