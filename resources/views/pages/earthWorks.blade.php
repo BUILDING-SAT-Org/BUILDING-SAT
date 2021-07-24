@@ -170,7 +170,8 @@
     <template id="form-textarea3">
         <div class="bsat-entry" :id="field.id" style="">
             <div style="text-align: right">
-                <i class="fa fa-window-close" style="color: red" v-on:click="removeFormElement"></i>
+                <i class="fa fa-window-close" style="color: red"
+                    v-on:click="removeFormElement(field.is_new,field.entry_id)"></i>
             </div>
             <div>
                 <vue-form-generator :schema="schema" :model="model" :options="formOptions" tag="div"
@@ -214,33 +215,34 @@
 
             data: function() {
                 var field = this.field;
+                var new_model = {
+                    id: 0,
+                    is_updated: 0,
+                    is_new: 1,
+                    quantity: 1,
+                    difficulty_level_id: 0,
+                    machinery_id: 1,
+                    machine_hours: 1,
+                    machinery_co2e: 0,
+                    machinery_co2e_label: 0,
+                    spoil_transported_outside: 0,
+                    total_quantity: 0,
+                    spoil_transport_vehicle_id: 1,
+                    location_id: 2,
+                    other_location: "Location",
+                    other_location_distance: 100,
+                    total_distance: 0,
+                    transport_co2e: 0,
+                    transport_co2e_label: 0,
+                    total_co2e: 0,
+                    data: {
+                        difficulty_data: 1,
+                        machine_data: 1,
+                        transport_data: 1,
+                    }
+                }
                 return {
-                    model: {
-                        id: 0,
-                        is_updated: 0,
-                        is_new: 1,
-                        quantity: 1,
-                        difficulty_level_id: 0,
-                        machinery_id: 1,
-                        machine_hours: 1,
-                        machinery_co2e: 0,
-                        machinery_co2e_label: 0,
-                        spoil_transported_outside: 0,
-                        total_quantity: 0,
-                        spoil_transport_vehicle_id: 1,
-                        location_id: 2,
-                        other_location: "Location",
-                        other_location_distance: 100,
-                        total_distance: 0,
-                        transport_co2e: 0,
-                        transport_co2e_label: 0,
-                        total_co2e: 0,
-                        data: {
-                            difficulty_data: 1,
-                            machine_data: 1,
-                            transport_data: 1,
-                        }
-                    },
+                    model: field.is_new ? new_model : field.model,
                     schema: {
                         fields: [{
                             type: "input",
@@ -266,7 +268,7 @@
 
                                 this.model.total_quantity = truncateFloat(total_quantity, 2);
 
-                                console.log(total_quantity)
+                                console.log(model)
                                 console.log('mmmk')
 
                                 this.$parent.$parent.$parent.$emit("calculate", this);
@@ -285,7 +287,7 @@
 
                                 model.data.difficulty_data = field.values().filter(i => i.id ==
                                     newVal)[0]
-
+                                console.log(newVal)
                                 let bulking_factor = this.model.data.difficulty_data
                                     .bulking_factor == undefined ? 1 :
                                     this.model.data.difficulty_data.bulking_factor;
@@ -506,9 +508,10 @@
                 onModelUpdated(newVal, schema) {
                     this.model.is_updated = 1;
                 },
-                removeFormElement: function() {
+                removeFormElement: function(is_new, entry_id) {
                     const id = this.$vnode.key;
-                    this.$parent.$emit('removeFormElement', id);
+                    this.$parent.$emit('removeFormElement', id, is_new, entry_id);
+                    console.log(id)
                 },
                 addFormElement: function() {
                     this.$parent.$emit('addFormElement2');
@@ -556,7 +559,8 @@
 
                         } else {
 
-                            distance_to_destination = resources.distances.filter(i => i.destination_id == this.model.location_id)[0].distance;
+                            distance_to_destination = resources.distances
+                            .filter(i => i.destination_id == this.model.location_id)[0].distance;
                             this.model.other_location = "";
                             this.model.other_location_distance = 0;
 
@@ -645,6 +649,7 @@
                         'destinations': resources.destinations,
                         'machines': resources.machinery,
                         'vehicles': resources.vehicles,
+                        'is_new': 1
                     })
                 },
                 addFormElement5: function(type) {
@@ -654,10 +659,20 @@
                         group: "Formula 1"
                     }])
                 },
-                removeFormElement: function(id) {
+                removeFormElement: function(id, is_new, entry_id) {
                     const index = this.fields.findIndex(f => f.id === id);
 
                     this.fields.splice(index, 1);
+
+                    if (!is_new) {
+                        axios.delete('/project/1/3/earthworks/entries/' + entry_id)
+                            .then(response => {
+                                console.log(response.data);
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                    }
                 },
                 generateModels: function(models) {
                     console.log(models)
@@ -670,6 +685,8 @@
                             'destinations': resources.destinations,
                             'machines': resources.machinery,
                             'vehicles': resources.vehicles,
+                            'is_new': 0,
+                            'entry_id': model.id
                         })
                     })
                 },

@@ -92,7 +92,7 @@ class EarthWorksController extends Controller
     }
 
 
-    public function save_earthworks(Request $request)
+    public function save_entries(Request $request)
     {
         try {
             $project = Projects::find($request['project_id']);
@@ -129,9 +129,38 @@ class EarthWorksController extends Controller
                     $entry->save();
 
                 }
-                
+
+                foreach ($updated_entries as $key => $updated_entry) {
+
+                    $entry = UserEarthworkEntry::find($updated_entry["id"]);
+                    $entry->quantity = $updated_entry["quantity"];
+                    $entry->difficulty_level_id = $updated_entry["difficulty_level_id"];
+                    $entry->machinery_id = $updated_entry["machinery_id"];
+                    $entry->machine_hours = $updated_entry["machine_hours"];
+                    $entry->machinery_co2e = $updated_entry["machinery_co2e"];
+                    $entry->machinery_co2e_label = $updated_entry["machinery_co2e_label"];
+                    $entry->spoil_transported_outside = $updated_entry["spoil_transported_outside"];
+                    $entry->total_quantity = $updated_entry["total_quantity"];
+                    $entry->spoil_transport_vehicle_id = $updated_entry["spoil_transport_vehicle_id"];
+                    $entry->location_id = $updated_entry["location_id"];
+                    $entry->other_location = $updated_entry["other_location"];
+                    $entry->other_location_distance = $updated_entry["other_location_distance"];
+                    $entry->total_distance = $updated_entry["total_distance"];
+                    $entry->transport_co2e = $updated_entry["transport_co2e"];
+                    $entry->transport_co2e_label = $updated_entry["transport_co2e_label"];
+                    $entry->total_co2e = $updated_entry["total_co2e"];
+                    $entry->data = $updated_entry["data"];
+
+                    $entry->save();
+
+                }
+
+                return response(200)
+                ->header('Content-Type', 'application/json');
+
             } else {
-                
+                return response(401)
+                ->header('Content-Type', 'application/json');
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -139,7 +168,7 @@ class EarthWorksController extends Controller
     }
 
 
-    public function get_earthworks_entries(Request $request)
+    public function get_entries(Request $request)
     {
         try {
             $project = Projects::find($request['project_id']);
@@ -150,6 +179,26 @@ class EarthWorksController extends Controller
                 return response($entries, 200)
 
             ->header('Content-Type', 'application/json');
+            } else {
+                return response(401)
+                ->header('Content-Type', 'application/json');
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+
+    public function delete_entry(Request $request)
+    {
+        try {
+            $project = Projects::find($request['project_id']);
+    
+            if ($project != null && $project->user_id == $request['user_id']) {
+
+                UserEarthworkEntry::where('id',$request['entry_id'])->delete();
+                return response(200)
+                ->header('Content-Type', 'application/json');
             } else {
                 return response(401)
                 ->header('Content-Type', 'application/json');
