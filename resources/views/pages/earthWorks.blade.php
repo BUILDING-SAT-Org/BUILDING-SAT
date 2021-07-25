@@ -180,7 +180,7 @@
             </div>
         </div>
     </template>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script>
         var user_id = {{ session('user_id') }};
         var project_id = {{ session('project_id') }};
@@ -197,6 +197,7 @@
                 complete: function complete() {},
                 success: function success(result) {
                     resources = result;
+                    console.log(resources);
                 },
                 error: function error() {
                     console.log("error");
@@ -285,11 +286,9 @@
                             },
                             onChanged: function(model, newVal, oldVal, field, schema, details) {
 
-                                model.data.difficulty_data = field.values().filter(i => i.id ==
-                                    newVal)[0]
+                                model.data.difficulty_data = field.values().filter(i => i.id == newVal)[0]
                                 console.log(newVal)
-                                let bulking_factor = this.model.data.difficulty_data
-                                    .bulking_factor == undefined ? 1 :
+                                let bulking_factor = this.model.data.difficulty_data.bulking_factor == undefined ? 1 :
                                     this.model.data.difficulty_data.bulking_factor;
 
                                 let bulk_density = this.model.data.difficulty_data.bulk_density ==
@@ -303,16 +302,29 @@
                                 this.$parent.$parent.$parent.$emit("calculate", this);
                             }
                         }, {
-                            type: "awesome",
+                            type: "treeSelect",
                             label: "Machinery",
                             model: "machinery_id",
                             help: "This is an other longer help text",
                             styleClasses: 'bsat-tree-select',
                             required: true,
                             values: function() {
+                                // console.log('ss')
                                 return field.machines;
                             },
+                            options:field.machines,
+                            selectOptions: {
+                                searchable: true,
+                                multiple: false,
+                                closeOnSelect: false,
+                                clearable: true,
+                                alwaysOpen: false,
+                                clearOnSelect: false,
+                                disableBranchNodes: true,
+                                showInfoIcon: true,
+                            },
                             onChanged: function(model, newVal, oldVal, field, schema) {
+                                console.log('opo')
                                 model.data.machine_data = field.values().filter(i => i.id ==
                                     newVal)[0]
                                 this.$parent.$parent.$parent.$emit("calculate", this);
@@ -374,13 +386,23 @@
                                 return model && model.spoil_transported_outside;
                             }
                         }, {
-                            type: "awesome",
+                            type: "treeSelect",
                             label: "Mode of Transport",
                             model: "spoil_transport_vehicle_id",
                             help: "This is an other longer help text",
                             styleClasses: 'bsat-tree-select',
                             required: true,
                             valueFormat: "object",
+                            selectOptions: {
+                                searchable: true,
+                                multiple: false,
+                                closeOnSelect: false,
+                                clearable: true,
+                                alwaysOpen: false,
+                                clearOnSelect: false,
+                                disableBranchNodes: true,
+                                showInfoIcon: true,
+                            },
                             values: function() {
                                 return field.vehicles;
                             },
@@ -501,12 +523,14 @@
             mounted() {
                 this.$on('node_value', this.node_value);
                 this.$on('itemInfo', this.itemInfo);
+                this.$on('iconOnClick', this.iconOnClick);
                 this.$on('calculate', this.calculate);
             },
 
             methods: {
                 onModelUpdated(newVal, schema) {
                     this.model.is_updated = 1;
+                    console.log('dddd')
                 },
                 removeFormElement: function(is_new, entry_id) {
                     const id = this.$vnode.key;
@@ -516,7 +540,7 @@
                 addFormElement: function() {
                     this.$parent.$emit('addFormElement2');
                 },
-                node_value(node) {
+                iconOnClick(node) {
                     console.log(node);
                 },
                 itemInfo(node) {

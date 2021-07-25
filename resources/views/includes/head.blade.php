@@ -28,7 +28,7 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table-vue.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/js/vue-treeselect.umd.min.js"></script>
 <style>
     /* .icon-trash-2:hover{

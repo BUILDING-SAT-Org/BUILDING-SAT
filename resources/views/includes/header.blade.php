@@ -80,7 +80,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Manage Materials</a>
+                        <a class="nav-link" href="#">Manage Resources</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Results</a>
