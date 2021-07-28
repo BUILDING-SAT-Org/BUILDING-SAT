@@ -58,3 +58,9 @@ Route::get('/earthworks/difficulty/siteclearence', [EarthWorksController::class,
 Route::get('/earthworks/resources/{user_id}/{project_id}', [EarthWorksController::class, 'get_resources']);
 
 Route::get('/resources/countries', [ManageResources::class, 'get_countries']);
+
+Route::post('/project/{user_id}/{project_id}/machines', [ManageResources::class, 'add_machine']);
+Route::put('/project/{user_id}/{project_id}/machines', [ManageResources::class, 'update_machine']);
+Route::post('/project/{user_id}/{project_id}/machines/delete', [ManageResources::class, 'delete_machine_list']);
+Route::delete('/project/{user_id}/{project_id}/machines/{machine_id}', [ManageResources::class, 'delete_machine']);
+Route::get('/project/{user_id}/{project_id}/machines', [ManageResources::class, 'get_machines']);

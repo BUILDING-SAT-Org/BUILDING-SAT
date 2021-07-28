@@ -15,6 +15,7 @@ class CreateBsatMachinesTable extends Migration
     {
         Schema::create('bsat_machines', function (Blueprint $table) {
             $table->id();
+            $table->string('key')->index()->nullable();
             $table->bigInteger('country_id')->unsigned()->index();
             $table->string('label');
             $table->date('year');

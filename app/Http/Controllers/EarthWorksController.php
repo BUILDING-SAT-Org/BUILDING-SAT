@@ -10,6 +10,7 @@ use App\Models\BsatMachines;
 use App\Models\BsatVehicles;
 use App\Models\BsatDistances;
 use App\Models\UserEarthworkEntry;
+use DB;
 
 class EarthWorksController extends Controller
 {
@@ -68,18 +69,34 @@ class EarthWorksController extends Controller
             $site_clearence_difficulty = BsatDifficultyLevels::where('bsat_subphase_id',1)->get();
             $soil_excavation_difficulty = BsatDifficultyLevels::where('bsat_subphase_id',2)->get();
             $destinations = Locations::all();
-            $machinery = BsatMachines::all();
+            // $machinery = BsatMachines::all();
             $vehicles = BsatVehicles::all();
 
             $project = Projects::find($request['project_id']);
 
             $distances = BsatDistances::where('origin_id',$project->location_id)->get();
 
+            $machines = DB::table('bsat_machines')
+                    ->select('key as id', 'countries', 'label', 'year', 'standard', 'data_source', 'technical_specification', 'gwp', 'units')
+                    ->get()->all();
+
+            $user_machines = DB::table('user_machines')
+                    ->select('key as id', 'countries', 'label', 'year', 'standard', 'data_source', 'technical_specification', 'gwp', 'units')
+                    ->get()->all();
+
+            $arr =  array(
+                "id"=>2,
+                "label"=>"Custom",
+                "children" => $user_machines
+            );
+
+            array_push($machines, $arr);
+
             $resp = array(
                 'site_clearence_difficulty'=>$site_clearence_difficulty,
                 'soil_excavation_difficulty'=>$soil_excavation_difficulty,
                 'destinations'=>$destinations,
-                'machinery'=>$machinery,
+                'machinery'=>$machines,
                 'vehicles'=>$vehicles,
                 'distances'=>$distances
             );

@@ -15,10 +15,11 @@ class CreateUserMachinesTable extends Migration
     {
         Schema::create('user_machines', function (Blueprint $table) {
             $table->id();
+            $table->string('key')->index()->nullable();
             $table->bigInteger('project_id')->unsigned()->index();
-            $table->bigInteger('country_id')->unsigned()->index();
+            $table->json('countries')->nullable();
             $table->string('label')->nullable();
-            $table->date('year')->nullable();
+            $table->integer('year')->nullable();
             $table->string('standard')->nullable();
             $table->string('data_source')->nullable();
             $table->string('technical_specification')->nullable();

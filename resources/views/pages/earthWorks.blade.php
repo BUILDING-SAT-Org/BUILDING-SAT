@@ -222,7 +222,7 @@
                     is_new: 1,
                     quantity: 1,
                     difficulty_level_id: 0,
-                    machinery_id: 1,
+                    machinery_id: 0,
                     machine_hours: 1,
                     machinery_co2e: 0,
                     machinery_co2e_label: 0,
