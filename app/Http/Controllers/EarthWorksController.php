@@ -85,7 +85,7 @@ class EarthWorksController extends Controller
                     ->get()->all();
 
             $arr =  array(
-                "id"=>2,
+                "id"=>0,
                 "label"=>"Custom",
                 "children" => $user_machines
             );

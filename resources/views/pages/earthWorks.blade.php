@@ -138,7 +138,7 @@
 
     </style>
     <h1>{{ session('user_id') }}</h1>
-    <button type="button" onclick="save_data()">Save</button>
+    <button type="button" id="saveEarthworks" class="btn btn-outline-primary" style="margin-left: 25px">Save</button>
     <div class="row">
         <div class="col-md-12">
             <div class="accordion bsat-accordion" id="accordionSiteClearence">
@@ -157,8 +157,8 @@
                         <div id="app4">
                             <div v-for="field in fields" v-bind:is="field.type" :key="field.id" :field="field">
                             </div>
-                            <button id="add_entry_btn" class="btn btn-outline-primary bsat-entry-btn"
-                                v-on:click="addFormElement2">Add
+                            <button id="btnAddSiteClearenceEntry" class="btn btn-outline-primary bsat-entry-btn"
+                                v-on:click="addEntry">Add
                                 Entry</button>
                         </div>
                     </div>
@@ -167,14 +167,14 @@
         </div>
     </div>
 
-    <template id="form-textarea3">
+    <template id="bsatEntry">
         <div class="bsat-entry" :id="field.id" style="">
             <div style="text-align: right">
                 <i class="fa fa-window-close" style="color: red"
-                    v-on:click="removeFormElement(field.is_new,field.entry_id)"></i>
+                    v-on:click="removeEntry(field.is_new,field.entry_id)"></i>
             </div>
             <div>
-                <vue-form-generator :schema="schema" :model="model" :options="formOptions" tag="div"
+                <vue-form-generator :schema="schema" :model="model" :options="formOptions" tag="div" ref="siteClearenceForm"
                     @model-updated="onModelUpdated" @validated="onValidated">
                 </vue-form-generator>
             </div>
@@ -207,8 +207,8 @@
 
         Vue.component('treeselect', VueTreeselect.Treeselect);
 
-        Vue.component('form-textarea3', {
-            template: '#form-textarea3',
+        Vue.component('bsatEntry', {
+            template: '#bsatEntry',
             props: ['field'],
             components: {
                 "vue-form-generator": VueFormGenerator.component
@@ -221,7 +221,7 @@
                     is_updated: 0,
                     is_new: 1,
                     quantity: 1,
-                    difficulty_level_id: 0,
+                    difficulty_level_id: '',
                     machinery_id: 0,
                     machine_hours: 1,
                     machinery_co2e: 0,
@@ -254,7 +254,7 @@
                             styleClasses: 'vgf-input-fixed',
                             required: true,
                             validator: VueFormGenerator.validators.number,
-                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                            onChanged: function(model, newVal, oldVal, field) {
 
                                 let bulking_factor = this.model.data.difficulty_data
                                     .bulking_factor == undefined ? 1 :
@@ -284,11 +284,13 @@
                             values: function() {
                                 return field.difficulty_level;
                             },
-                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                            onChanged: function(model, newVal, oldVal, field) {
 
-                                model.data.difficulty_data = field.values().filter(i => i.id == newVal)[0]
+                                model.data.difficulty_data = field.values().filter(i => i.id ==
+                                    newVal)[0]
                                 console.log(newVal)
-                                let bulking_factor = this.model.data.difficulty_data.bulking_factor == undefined ? 1 :
+                                let bulking_factor = this.model.data.difficulty_data
+                                    .bulking_factor == undefined ? 1 :
                                     this.model.data.difficulty_data.bulking_factor;
 
                                 let bulk_density = this.model.data.difficulty_data.bulk_density ==
@@ -312,7 +314,7 @@
                                 // console.log('ss')
                                 return field.machines;
                             },
-                            options:field.machines,
+                            options: field.machines,
                             selectOptions: {
                                 searchable: true,
                                 multiple: false,
@@ -323,10 +325,15 @@
                                 disableBranchNodes: true,
                                 showInfoIcon: true,
                             },
-                            onChanged: function(model, newVal, oldVal, field, schema) {
+                            onChanged: function(model, newVal, oldVal, field) {
                                 console.log('opo')
                                 model.data.machine_data = field.values().filter(i => i.id ==
                                     newVal)[0]
+
+                                if (model.data.machine_data == undefined) {
+                                    model.data.machine_data = field.values().filter(i => i.id == 0)[
+                                        0].children.filter(i => i.id == newVal)[0];
+                                }
                                 this.$parent.$parent.$parent.$emit("calculate", this);
                             }
                         }, {
@@ -338,7 +345,7 @@
                             styleClasses: 'vgf-input-fixed',
                             required: true,
                             validator: VueFormGenerator.validators.number,
-                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                            onChanged: function(model, newVal, oldVal, field) {
                                 this.$parent.$parent.$parent.$emit("calculate", this);
                             }
                         }, {
@@ -365,7 +372,7 @@
                             help: "This is an other longer help text",
                             styleClasses: 'col-md-12 display-inline',
                             required: true,
-                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                            onChanged: function(model, newVal, oldVal, field) {
                                 this.$parent.$parent.$parent.$emit("calculate", this);
                             }
                         }, {
@@ -379,7 +386,7 @@
                             styleClasses: 'vgf-input-fixed',
                             required: true,
                             validator: VueFormGenerator.validators.number,
-                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                            onChanged: function(model, newVal, oldVal, field) {
                                 this.$parent.$parent.$parent.$emit("calculate", this);
                             },
                             visible: function(model) {
@@ -406,7 +413,7 @@
                             values: function() {
                                 return field.vehicles;
                             },
-                            onChanged: function(model, newVal, oldVal, field, schema) {
+                            onChanged: function(model, newVal, oldVal, field) {
 
                                 model.data.transport_data = field.values().filter(i => i.id ==
                                     newVal)[0]
@@ -443,7 +450,7 @@
                             styleClasses: 'vgf-input-fixed',
                             required: true,
                             validator: VueFormGenerator.validators.string,
-                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                            onChanged: function(model, newVal, oldVal, field) {
                                 this.$parent.$parent.$parent.$emit("calculate", this);
                             },
                             visible: function(model) {
@@ -468,7 +475,7 @@
                             styleClasses: 'vgf-input-fixed',
                             required: true,
                             validator: VueFormGenerator.validators.number,
-                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                            onChanged: function(model, newVal, oldVal, field) {
                                 this.$parent.$parent.$parent.$emit("calculate", this);
                             },
                             visible: function(model) {
@@ -491,7 +498,7 @@
                             help: "This is an other longer help text",
                             styleClasses: 'vgf-input-fixed',
                             readonly: true,
-                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                            onChanged: function(model, newVal, oldVal, field) {
                                 this.$parent.$parent.$parent.$emit("calculate", this);
                             },
                             visible: function(model) {
@@ -505,7 +512,7 @@
                             help: "This is an other longer help text",
                             styleClasses: 'vgf-input-fixed',
                             readonly: true,
-                            onChanged: function(model, newVal, oldVal, field, schema, details) {
+                            onChanged: function(model, newVal, oldVal, field) {
                                 this.$parent.$parent.$parent.$emit("calculate", this);
                             },
                             visible: function(model) {
@@ -532,13 +539,13 @@
                     this.model.is_updated = 1;
                     console.log('dddd')
                 },
-                removeFormElement: function(is_new, entry_id) {
+                removeEntry: function(is_new, entry_id) {
                     const id = this.$vnode.key;
-                    this.$parent.$emit('removeFormElement', id, is_new, entry_id);
+                    this.$parent.$emit('removeEntry', id, is_new, entry_id);
                     console.log(id)
                 },
                 addFormElement: function() {
-                    this.$parent.$emit('addFormElement2');
+                    this.$parent.$emit('addEntry');
                 },
                 iconOnClick(node) {
                     console.log(node);
@@ -584,7 +591,7 @@
                         } else {
 
                             distance_to_destination = resources.distances
-                            .filter(i => i.destination_id == this.model.location_id)[0].distance;
+                                .filter(i => i.destination_id == this.model.location_id)[0].distance;
                             this.model.other_location = "";
                             this.model.other_location_distance = 0;
 
@@ -614,12 +621,17 @@
                 },
                 onValidated(isValid, errors) {
 
-                    $('#add_entry_btn').prop('disabled', true)
+                    $('#btnAddSiteClearenceEntry').prop('disabled', true)
 
                     if (isValid) {
-                        $('#add_entry_btn').prop('disabled', false)
+                        $('#btnAddSiteClearenceEntry').prop('disabled', false)
                     }
-                }
+                },
+                onValidate: function($event) {
+                    console.log('Validating', this.$refs);
+                    var errors = this.$refs.vfg.validate();
+                    console.log('Validated', errors);
+                },
             },
         });
 
@@ -632,8 +644,8 @@
                 difficulty_level: []
             },
             mounted() {
-                this.$on('removeFormElement', this.removeFormElement);
-                this.$on('addFormElement2', this.addFormElement2);
+                this.$on('removeEntry', this.removeEntry);
+                this.$on('addEntry', this.addEntry);
                 this.getDifficultyLevels(this.difficulty_level);
                 // getResources();
 
@@ -665,9 +677,9 @@
 
             },
             methods: {
-                addFormElement2: function() {
+                addEntry: function() {
                     this.fields.push({
-                        'type': 'form-textarea3',
+                        'type': 'bsatEntry',
                         'id': this.count++,
                         'difficulty_level': resources.site_clearence_difficulty,
                         'destinations': resources.destinations,
@@ -683,7 +695,7 @@
                         group: "Formula 1"
                     }])
                 },
-                removeFormElement: function(id, is_new, entry_id) {
+                removeEntry: function(id, is_new, entry_id) {
                     const index = this.fields.findIndex(f => f.id === id);
 
                     this.fields.splice(index, 1);
@@ -702,7 +714,7 @@
                     console.log(models)
                     models.forEach((model) => {
                         this.fields.push({
-                            'type': 'form-textarea3',
+                            'type': 'bsatEntry',
                             'id': this.count++,
                             'model': model,
                             'difficulty_level': resources.site_clearence_difficulty,
@@ -715,12 +727,16 @@
                     })
                 },
                 getModals: function() {
+                    console.log('dd')
                     let total_machinery_co2e = 0;
                     let total_transport_co2e = 0;
 
                     let models = this.$children.map(function(child) {
                         total_machinery_co2e = total_machinery_co2e + child.model.machinery_co2e;
                         total_transport_co2e = total_transport_co2e + child.model.transport_co2e;
+                        var errors = child.$refs.siteClearenceForm.validate();
+                        console.log('dfdfdfdfddff')
+                        console.log(errors)
                         return child.model;
                     });
 
@@ -758,7 +774,9 @@
             }
         })
 
-        async function save_data() {
+        $("#saveEarthworks").on("click", function(){ saveEarthworks(); });
+
+        async function saveEarthworks() {
             var site_clearence_data = site_clearence.getModals();
             console.log(site_clearence_data)
 
@@ -772,10 +790,10 @@
                 data: JSON.stringify(site_clearence_data),
                 dataType: "json",
                 complete: function complete() {
-                    console.log("save_data complete");
+                    console.log("saveEarthworks complete");
                 },
                 success: function success(result) {
-                    console.log("save_data success");
+                    console.log("saveEarthworks success");
                 },
                 error: function error() {
                     console.log("error");

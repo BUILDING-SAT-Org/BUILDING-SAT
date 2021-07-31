@@ -64,3 +64,87 @@ Route::put('/project/{user_id}/{project_id}/machines', [ManageResources::class, 
 Route::post('/project/{user_id}/{project_id}/machines/delete', [ManageResources::class, 'delete_machine_list']);
 Route::delete('/project/{user_id}/{project_id}/machines/{machine_id}', [ManageResources::class, 'delete_machine']);
 Route::get('/project/{user_id}/{project_id}/machines', [ManageResources::class, 'get_machines']);
+
+
+
+
+
+
+
+// Route::get('/resources', [ManageResources::class, 'add_machine']);
+
+// //countries locations....
+
+// /*project types*/
+// Route::get('/resources/project-types/{id}', [ManageResources::class, 'add_machine']);
+// Route::put('/resources/project-types/{id}', [ManageResources::class, 'add_machine']);
+// Route::post('/resources/project-types', [ManageResources::class, 'add_machine']);
+// Route::delete('/resources/project-types/{id}', [ManageResources::class, 'add_machine']);
+
+// //https://www.ibm.com/docs/en/supply-chain-insight?topic=apis-bulk-deleting-work-orders
+// Route::post('/resources/project-types/bulk', [ManageResources::class, 'add_machine']);
+
+
+// /*b sat machines*/
+// Route::get('/resources/machines', [ManageResources::class, 'add_machine']);
+
+// Route::get('/resources/machines/{id}', [ManageResources::class, 'add_machine']);
+// Route::put('/resources/machines/{id}', [ManageResources::class, 'add_machine']);
+// Route::post('/resources/machines', [ManageResources::class, 'add_machine']);
+// Route::delete('/resources/machines/{id}', [ManageResources::class, 'add_machine']);
+
+// //https://www.ibm.com/docs/en/supply-chain-insight?topic=apis-bulk-deleting-work-orders
+// Route::post('/resources/machines/bulk', [ManageResources::class, 'add_machine']);
+
+// /**/
+
+// Route::get('/users', [ManageResources::class, 'add_machine']);
+
+// Route::get('/users/{id}', [ManageResources::class, 'add_machine']);
+// Route::put('/users/{id}', [ManageResources::class, 'add_machine']);
+// Route::post('/users', [ManageResources::class, 'add_machine']);
+// Route::delete('/users/{id}', [ManageResources::class, 'add_machine']);
+
+// //https://www.ibm.com/docs/en/supply-chain-insight?topic=apis-bulk-deleting-work-orders
+// Route::post('/users/bulk', [ManageResources::class, 'add_machine']);
+
+
+// /*user projects*/ 
+
+// Route::get('/users/projects', [ManageResources::class, 'add_machine']);
+
+// Route::get('/users/projects/{id}', [ManageResources::class, 'add_machine']);
+// Route::put('/users/projects/{id}', [ManageResources::class, 'add_machine']);
+// Route::post('/users/projects', [ManageResources::class, 'add_machine']);
+// Route::delete('/users/projects/{id}', [ManageResources::class, 'add_machine']);
+
+// //https://www.ibm.com/docs/en/supply-chain-insight?topic=apis-bulk-deleting-work-orders
+// Route::post('/users/projects/bulk', [ManageResources::class, 'add_machine']);
+
+
+
+// /*user projects machines*/
+// Route::get('/users/projects/{id}/resources/machines', [ManageResources::class, 'add_machine']);
+
+// Route::get('/users/projects/{id}/resources/machines/{id}', [ManageResources::class, 'add_machine']);
+// Route::put('/users/projects/{id}/resources/machines/{id}', [ManageResources::class, 'add_machine']);
+// Route::post('/users/projects/{id}/resources/machines', [ManageResources::class, 'add_machine']);
+// Route::delete('/users/projects/{id}/resources/machines/{id}', [ManageResources::class, 'add_machine']);
+
+// //https://www.ibm.com/docs/en/supply-chain-insight?topic=apis-bulk-deleting-work-orders
+// Route::post('/users/projects/{id}/resources/machines/bulk', [ManageResources::class, 'add_machine']);
+
+
+
+// /*main phases*/
+
+// // add difficulty levels for this resource , destinations, machinery, transport, unloading destinations, 
+// Route::get('/users/projects/earthworks', [ManageResources::class, 'add_machine']);
+
+// Route::get('/users/projects/{id}/earthworks', [ManageResources::class, 'add_machine']);
+// Route::put('/users/projects/{id}/earthworks', [ManageResources::class, 'add_machine']);
+// Route::post('/users/projects/{id}/earthworks', [ManageResources::class, 'add_machine']);
+// Route::delete('/users/projects/earthworks{id}', [ManageResources::class, 'add_machine']);
+
+// //https://www.ibm.com/docs/en/supply-chain-insight?topic=apis-bulk-deleting-work-orders
+// Route::post('/users/projects/earthworks/bulk', [ManageResources::class, 'add_machine']);
