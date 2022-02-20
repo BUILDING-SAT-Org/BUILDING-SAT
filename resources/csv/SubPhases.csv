@@ -1,0 +1,53 @@
+Main Phase Id, Name, Slug, Contains Material, Description
+1;Rock Excavation;rock_excavation;0;This involves the removal of rocks that usually requires special excavation methods
+1;Back Filling;back_filling;0;Backfilling is defined here as processed of replacing or reusing the soil that was removed during excavation to strengthen and support the structure’s foundation or any other structural members. Backfilling material can vary between soil and other preferable filling materials. Use this section to enter all material related to back filling activities.
+2;Foundation;foundation;1;Foundations are defined here as all substructures positioned below the ground level and are used to transfer loads to the ground. Use this section to account for all the material related to all types of foundations.
+1;Site clearance;site_clearance;0;This section accounts for the removal of 200 mm of topsoil including vegetation/ accumulated waste/ debris/ boulders from the site area to ensure that it is free from hazards, obstacles, or any unsightly mess.
+1;Soil Excavation;soil_excavation;0; This involves the removal of the soil beneath the topsoil. This may include all excavation works for foundations etc.
+2;Retaining Walls;retaining_walls;1;Retaining walls are defined here as all types of rigid walls used for supporting soil laterally so that it could be retained at different levels on both sides. Use this section to account for all the material related to all types of retaining structures.
+2;Earth Support Systems;earth_support_systems;1;Earth support systems is defined here as all the temporary/semi-permanent/permanent structures that aid in protecting adjacent structures and utilities to further prevent the possibilities of collapse. Use this section to account for all the material related to all types of earth support systems.
+2;Mortar In Substructure;mortar_substructure;0;Use this section exclusively to account for all mortar and plaster used under substructure.
+2;Formwork;formwork;1;Formwork considered here are all the temporary molds created to pour and form concrete. Enter timber, steel, glass fiber, reinforced plastic etc. used as formwork. Use this section to account for all the material related to all types of formwork.
+2;Insulation;insulation;1;Enter all the insulating material used for activities such as energy saving measures, preventing the heat etc.
+2;Termite Treatment And Damp Proof Course;termite_treatment_and_damp_proof_course;1;Enter all materials used as moisture or water vapor barriers, chemical barriers (used against subterranean termites )etc., used within the building.
+2;Other Concrete Works;other_concrete_works;1;Other concrete works within the site includes the concrete used for constructions other than the building itself such as the construction of water tanks, landscaping, pavements etc.
+4;Foundation;foundation;0;""
+4;Site clearance;site_clearance;0;""
+4;Soil Excavation;soil_excavation;0;""
+4;Retaining Walls;retaining_walls;0;""
+4;Earth Support Systems;earth_support_systems;0;""
+4;Formwork;formwork;0;""
+4;Other Concrete Works;other_concrete_works;0;""
+4;Termite Treatment And Damp Proof Course;termite_treatment_and_damp_proof_course;0;""
+4;Insulation;insulation;0;""
+3;Walls And Facades;walls_and_facades;1;Under this topic, all materials used in walls (bricks, blocks, concrete, partitioning etc.) can be entered. Do not account mortar and plaster here.
+3;Columns;columns;1;Under this topic, enter all materials related to column construction such as grades of concrete, reinforcements, admixtures etc.
+3;Beams;beams;1;Under this topic, enter all materials related to beam construction such as grades of concrete, reinforcements, admixtures etc.
+3;Floor Slabs;floor_slabs;1;Under this topic, enter all materials related to floor slabs construction such as grades of concrete, reinforcements, admixtures etc.
+3;Roof And Ceiling;roof_and_ceiling;1;Under this topic, enter all materials related to roofing and ceiling materials, concrete, reinforcements, admixtures etc.
+3;Doors And Windows;doors_and_windows;1;Under this topic, enter all materials related to doors and windows in the whole building. Doors and windows can be entered as timber, aluminum, glass, ironmongery etc.
+3;Service Equipment;service_equipment;1;Under this topic, enter all materials related to service equipment such as plumbing, mechanical, electrical and elevator equipment, fire suppression systems, fuel tanks, including piping, wiring, fixtures, and other accessories which provide sanitation, lighting, power, heating, ventilation, cooling, refrigeration, firefighting within the building.
+3;Mortar In SuperStructure;mortar_superstructure;0;Enter all mortar used as binder in walling etc. under superstructure here. Make sure not to repeat any mortar accounted in substructure earlier.
+5;Floor Finishes;floor_finishes;1;This section can be utilized to enter all materials used as floor finishes.
+5;Wall Finishes;wall_finishes;1;This section can be utilized to enter all materials used as wall finishes.
+5;Roof And Ceiling Finishes;roof_and_ceiling_finishes;1;Use this section to enter all materials related to roof and ceiling finishes in the building.
+5;Mortar In Internal And External Finishes;mortar_internal_and_external_finishes;0;Enter all mortar plaster used (covering up walls, floor etc.) in relation to internal and external finishes here. Make sure, not to repeat any mortar and plastering accounted in substructure and superstructure sections earlier.
+6;Electricity Use On Site;electricity_use_on_site;0;Use this section to enter electricity used for site operations during the full construction phase of the building.
+6;Fuel Use On Site;fuel_use_on_site;0;Use this section to enter fuel used for site operations during the full construction phase of the building.
+6;Water Consumption On Site;water_consumption_on_site;0;Use this section to enter water used for site operations during the full construction phase of the building.
+6;Waste Generated;waste_generated;0;Use this section to enter all types of waste generated during the full construction phase of the building.
+7;Electricity Used During Operation;electricity_used_during_operation;0;Use this section to enter the amount of electricity usage of the building over the full-service life.
+7;Fuel Used During Operation;fuel_used_during_operation;0;This section is dedicated to all entries related to fuel consumption during the operation or use stage of the building over the full-service life.
+7;Exported Energy During Operation;exported_energy_during_operation;0;This section is dedicated to all entries related to energy generated at site and exported to the main grid during the operational or use stage of the building over the full-service life.
+8;Water Consumption During Operation;water_consumption_during_operation;0;This section is dedicated to all entries related to water consumption during the operation or use stage of the building over the full-service life.
+9;Electricity Use On Site;electricity_use_on_site;0;This section accounts for the electricity usage for the chosen demolition technique.
+9;Fuel Use On Site;fuel_use_on_site;0;This section accounts for the fuel usage for the chosen demolition technique.
+9;Chemicals;chemicals;0;This section accounts for the chemical usage for the chosen demolition technique.
+9;Landfill And Salvage;landfill_and_salvage;0;This section refers to demolished waste processing of the building. All demolished wastage generated by the materials entered earlier by the user are used to automatically calculate the landfill quantity and salvage quantity. The user can define the salvage and landfill percentages. Except the salvage and use option, no recycling options are accounted here. Results can be edited by user where necessary.
+4;walls and facades;walls_and_facades;0;
+4;columns;columns;0;
+4;beams;beams;0;
+4;floor slabs;floor_slabs;0;
+4;roof and ceiling;roof_and_ceiling;0;
+4;doors and windows;doors_and_windows;0;
+4;service equipment;service_equipment;0;

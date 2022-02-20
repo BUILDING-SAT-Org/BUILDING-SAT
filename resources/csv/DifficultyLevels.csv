@@ -1,0 +1,12 @@
+
+Low - Weathered rock;1;1.25;1.6;1.0
+Medium - Fractured rock;1;1.35;2.2;1.0
+Hard - Solid rock;1;1.48;2.8;1.0
+Low - Flat land + grass;4;1.25;1.6;1.0
+Medium - Sloped land + bushes;4;1.35;2.2;1.0
+Hard - Sloped land + large trees + boulders;4;1.48;2.8;1.0
+Low - Sand;5;1.25;1.6;1.0
+Low - Gravel;5;1.25;1.8;1.0
+Medium - Clay;5;1.35;2.2;1.0
+Medium - Clayey gravel;5;1.35;2.5;1.0
+Hard - Rock;5;1.48;2.8;1.0
