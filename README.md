@@ -20,11 +20,11 @@ Check the official laravel installation guide for server requirements before you
 
 Clone the repository
 
-    git clone
+    git clone https://github.com/SangeethKarunaratne/BUILDING-SAT.git
 
 Switch to the repo folder
 
-    cd building-sat
+    cd BUILDING-SAT
 
 Install all the dependencies using composer
 
