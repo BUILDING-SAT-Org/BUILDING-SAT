@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserMachine extends Model
+class BsatMaterial extends Model
 {
     use HasFactory;
 
@@ -24,13 +24,13 @@ class UserMachine extends Model
         parent::boot();
 
         static::created(function ($model) {
-            $model->id = 'UM' . $model->key;
+            $model->id = 'BMAT' . $model->key;
             $model->save();
         });
     }
 
-    public function user()
+    public function category()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo('App\Models\BsatMaterialCategory');
     }
 }

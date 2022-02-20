@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserMachine extends Model
+class BsatWaterType extends Model
 {
     use HasFactory;
 
@@ -24,13 +24,8 @@ class UserMachine extends Model
         parent::boot();
 
         static::created(function ($model) {
-            $model->id = 'UM' . $model->key;
+            $model->id = 'BW' . $model->key;
             $model->save();
         });
-    }
-
-    public function user()
-    {
-        return $this->belongsTo('App\Models\User');
     }
 }

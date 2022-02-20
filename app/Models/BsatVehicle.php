@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserMachine extends Model
+class BsatVehicle extends Model
 {
     use HasFactory;
 
@@ -17,20 +17,15 @@ class UserMachine extends Model
     protected $primaryKey = 'key';
     public $incrementing = true;
 
-    protected $hidden = ['key', 'created_at', 'updated_at'];
+    protected $hidden = ['created_at', 'updated_at'];
 
     protected static function boot()
     {
         parent::boot();
 
         static::created(function ($model) {
-            $model->id = 'UM' . $model->key;
+            $model->id = 'BV' . $model->key;
             $model->save();
         });
-    }
-
-    public function user()
-    {
-        return $this->belongsTo('App\Models\User');
     }
 }
