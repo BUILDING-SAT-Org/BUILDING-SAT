@@ -1,103 +1,138 @@
 <!-- Header -->
-<div class="logo-container">
-    <img src="/images/logo.png" class="logo" />
-</div>
-<header class="p-3 bg-dark text-white">
-    <div style="width: 100%">
-        <div class="d-flex flex-wrap align-items-right justify-content-right justify-content-lg-end">
-            <a href="/" class="d-flex align-items-right mb-2 mb-lg-0 text-white text-decoration-none">
-                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
-                    <use xlink:href="#bootstrap"></use>
-                </svg>
+<header class="p-3 bg-dark">
+    <div class="row  flex-nowrap">
+        <div class="col-auto mr-auto">
+            <a href="/" class="">
+                <img src="/images/logo.png" alt="bsat-logo" title="bsat-logo" style="width: 180px;height: 60px;">
             </a>
+        </div>
+        <div class="col-auto" style="align-self: center;">
+            @auth
+                <a href="/dashboard" class="px-2 link-text-white">Dashboard</a>
+                <a href="http://building-sat.com" class="px-2 link-text-white">About</a>
+                <span class="dropdown">
+                    <a class="px-2 dropdown-toggle link-text-white" href="#" role="button" id="dropdownHelpLink"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Help
+                    </a>
 
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 mb-md-0">
-                <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">Features</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">About</a></li>
-            </ul>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownHelpLink">
+                        <li><a href="http://building-sat.com/faq/" class="dropdown-item">FAQs</a></li>
+                        <li><a href="http://building-sat.com/help-videos/" class="dropdown-item">Help Videos</a></li>
+                        <li><a href="http://building-sat.com/contact-us/" class="dropdown-item">Contact Us</a></li>
+                    </ul>
+                </span>
+                @if (Auth::user()->role == "admin")
+                    <a class="btn btn-outline-light" href="/manage-bsat-resources">Manage BSAT Resources</a>
+                @endif
+                <a href="/signout" class="btn btn-outline-light">Logout</a>
+            @endauth
+            @guest
+                <a href="http://building-sat.com/about" class="px-2 link-text-white">About</a>
+                <span class="dropdown">
+                    <a class="px-2 dropdown-toggle link-text-white" href="#" role="button" id="dropdownHelpLink"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Help
+                    </a>
 
-            @if (session('user_id') != null)
-                <div class="float-left">
-                    <a href="/signout" class="btn btn-outline-light me-2">Logout</a>
-                </div>
-            @else
-                <div class="text-end">
-                    <button type="button" class="btn btn-outline-light me-2">Login</button>
-                    <button type="button" class="btn btn-warning">Sign-up</button>
-                </div>
-            @endif
+                    <ul class="dropdown-menu" aria-labelledby="dropdownHelpLink">
+                        <li><a href="http://building-sat.com/faq/" class="dropdown-item">FAQs</a></li>
+                        <li><a href="http://building-sat.com/help-videos/" class="dropdown-item">Help Videos</a></li>
+                        <li><a href="http://building-sat.com/contact-us/" class="dropdown-item">Contact Us</a></li>
+                    </ul>
+                </span>
+                <a href="/login" class="btn btn-outline-light me-2">Login</a>
+                <a href="/register" class="btn btn-warning">Sign-up</a>
+            @endguest
         </div>
     </div>
 </header>
-@if (session('user_id') != null)
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Project Name</a>
-        <div style="width: 100%">
-            <div class="navbar float-right" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">General Information</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+@auth
+    @if (Request::is('project/*'))
+        <div class="bsat-nav-bar">
+            <div class="row" style="justify-content: flex-end;">
+                <div class="col-auto">
+                    <a class="px-2 btn btn-secondary text-white" type="button"
+                       id="dropdownMenuButton" onclick="editProject({{$project_id}})">General Information</a>
+
+                    <span class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                           data-bs-toggle="dropdown" aria-expanded="false">
                             Construction Phase
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">EarthWorks</a>
-                            <a class="dropdown-item" href="#">Substructure</a>
-                            <a class="dropdown-item" href="#">Superstructure</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item"
+                                   onclick="navigate('/project/{{ Auth::user()->id }}/{{ $project_id}}/earthworks')"
+                                >EarthWorks</a></li>
+                        <li><a class="dropdown-item"
+                               onclick="navigate('/project/{{ Auth::user()->id }}/{{$project_id}}/sub-structure')"
+                            >Substructure</a></li>
+                        <li><a class="dropdown-item"
+                               onclick="navigate('/project/{{ Auth::user()->id }}/{{$project_id}}/super-structure')"
+                            >Superstructure</a></li>
+                        <li><a class="dropdown-item"
+                               onclick="navigate('/project/{{ Auth::user()->id }}/{{$project_id}}/internal-and-external-finishes')"
+                            >Internal and External Finishes</a></li>
+                        <li>
+                            <a class="dropdown-item"
+                               onclick="navigate('/project/{{ Auth::user()->id }}/{{ $project_id}}/construction-site-operations')"
+                            >Construction Site Operations</a>
+                        </li>
+                        </ul>
+                    </span>
+
+                    <span class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                           data-bs-toggle="dropdown" aria-expanded="false">
                             Operation Phase
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
+
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item"
+                                   onclick="navigate('/project/{{ Auth::user()->id }}/{{ $project_id}}/energy-consumption')"
+                                >Energy Consumption</a></li>
+                            <li><a class="dropdown-item"
+                                   onclick="navigate('/project/{{ Auth::user()->id }}/{{ $project_id}}/water-consumption')"
+                                >Water Consumption</a></li>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Demolition Phase
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Manage Resources</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Results</a>
-                    </li>
-                </ul>
+                            <li><a class="dropdown-item"
+                                   onclick="navigate('/project/{{ Auth::user()->id }}/{{ $project_id}}/maintenance-replacement')"
+                                >Maintenance and Replacement</a></li>
+                        </ul>
+                    </span>
+
+                    <a class="px-2 btn btn-secondary text-white"
+                       onclick="navigate('/project/{{ Auth::user()->id }}/{{$project_id}}/demolition-phase')"
+                    >Demolition Phase</a>
+                    <a class="px-2 btn btn-secondary text-white"
+                       onclick="navigate('/project/{{ Auth::user()->id }}/{{$project_id}}/manage-resources')"
+                    >Manage Project Resources</a>
+                    <a class="px-2 btn btn-secondary text-white"
+                       onclick="navigate('/project/{{ Auth::user()->id }}/{{$project_id}}/results')"
+                    >Results</a>
+                    @if (!Request::is('*/results') && !Request::is('*/manage-resources'))
+                        <button type="button" id="btnSave" class="btn btn-primary"
+                                style="">Save
+                        </button>
+                    @endif
+                </div>
             </div>
         </div>
-    </nav>
-@endif
-<!-- end: Header -->
-<style>
-    .navbar-nav li .nav-link {
-        border: 2px;
-        border-color: antiquewhite;
-        /* border: solid; */
-        border-style: solid;
-        margin-right: 5px;
-    }
+        <div class="" style="margin-left: 25px;">
+            <h1>Project: {{$project_name}}</h1>
+        </div>
+        @include('popups.projectModal')
+    @endif
 
-</style>
+    <div class="loading">
+        <div class='uil-ring-css' style='transform:scale(0.79);'>
+            <div></div>
+        </div>
+    </div>
+
+    <script>
+        var loadingOverlay = document.querySelector('.loading');
+    </script>
+@endauth
+<!-- end: Header -->

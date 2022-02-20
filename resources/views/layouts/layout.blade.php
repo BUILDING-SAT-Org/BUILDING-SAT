@@ -16,5 +16,5 @@
     </div>
 
 </body>
-
+@include('includes.footer')
 </html>
