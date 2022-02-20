@@ -14,16 +14,17 @@ class CreateBsatVehiclesTable extends Migration
     public function up()
     {
         Schema::create('bsat_vehicles', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('country_id')->unsigned()->index();
+            $table->bigIncrements('key')->index();
+            $table->string('id')->index()->nullable();
+            $table->json('countries')->nullable();
             $table->string('label');
-            $table->date('year');
-            $table->string('standard');
-            $table->string('data_source');
-            $table->float('loading_capacity');
-            $table->string('technical_specification');
-            $table->float('gwp');
-            $table->string('units');
+            $table->smallInteger('year')->nullable();
+            $table->string('standard')->nullable();
+            $table->string('data_source')->nullable();
+            $table->double('loading_capacity', 30, 3)->nullable();
+            $table->string('technical_specification')->nullable();
+            $table->decimal('gwp', 30, 8);
+            $table->string('unit')->nullable();
             $table->timestamps();
         });
     }

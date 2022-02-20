@@ -17,7 +17,7 @@ class CreateBsatDistancesTable extends Migration
             $table->id();
             $table->bigInteger('origin_id')->unsigned()->index();
             $table->bigInteger('destination_id')->unsigned()->index();
-            $table->float('distance');
+            $table->double('distance', 30, 3);
             $table->timestamps();
             $table->foreign('origin_id')->references('id')->on('locations')->onDelete('cascade');
             $table->foreign('destination_id')->references('id')->on('locations')->onDelete('cascade');

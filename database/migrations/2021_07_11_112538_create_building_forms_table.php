@@ -13,7 +13,7 @@ class CreateBuildingFormsTable extends Migration
      */
     public function up()
     {
-        Schema::create('building_forms', function (Blueprint $table) {
+        Schema::create('bsat_building_forms', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateBuildingFormsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('building_forms');
+        Schema::dropIfExists('bsat_building_forms');
     }
 }

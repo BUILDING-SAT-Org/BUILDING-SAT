@@ -14,16 +14,16 @@ class CreateBsatMachinesTable extends Migration
     public function up()
     {
         Schema::create('bsat_machines', function (Blueprint $table) {
-            $table->id();
-            $table->string('key')->index()->nullable();
-            $table->bigInteger('country_id')->unsigned()->index();
+            $table->bigIncrements('key')->index();
+            $table->string('id')->index()->nullable();
+            $table->json('countries')->nullable();
             $table->string('label');
-            $table->date('year');
-            $table->string('standard');
-            $table->string('data_source');
-            $table->string('technical_specification');
-            $table->float('gwp');
-            $table->string('units');
+            $table->smallInteger('year')->nullable();
+            $table->string('standard')->nullable();
+            $table->string('data_source')->nullable();
+            $table->string('technical_specification')->nullable();
+            $table->decimal('gwp', 30, 8);
+            $table->string('unit')->nullable();
             $table->timestamps();
         });
     }

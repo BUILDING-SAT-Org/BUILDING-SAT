@@ -18,16 +18,17 @@ class CreateUsersTable extends Migration
             $table->bigInteger('country_id')->unsigned()->index();
             $table->string('name');
             $table->string('email')->unique();
-            $table->tinyInteger('user_type');
-            $table->string('company');
-            $table->string('city');
-            $table->string('contact_number');
-            $table->integer('subscribed_newletter');
+            $table->string('role');
+            $table->string('user_type');
+            $table->string('company')->nullable();
+            $table->string('city')->nullable();
+            $table->string('contact_number')->nullable();
+            $table->integer('subscribed_newsletter');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
+            $table->foreign('country_id')->references('id')->on('countries');
         });
     }
 
