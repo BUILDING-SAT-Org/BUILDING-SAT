@@ -20,12 +20,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'user_type',
         'company',
-        'country',
-        'city',
-        'number',
-        'newsletter',
+        'country_id',
+        'user_type',
+        'contact_number',
+        'subscribed_newsletter',
         'role'
     ];
 
@@ -47,4 +46,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'user_id', 'id');
+    }
 }

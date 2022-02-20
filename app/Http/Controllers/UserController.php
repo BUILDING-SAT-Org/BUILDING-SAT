@@ -5,19 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Session;
+use Auth;
 
 class UserController extends Controller
 {
+
+    public function get(Request $request)
+    {
+        return response(Auth::user())->header('Content-Type', 'application/json');
+    }
 
     public function register_user(Request $request)
     {
         $user = User::where('email', $request['email'])->first();
 
         if ($user != null) {
-            // return redirect('signin', 302);
-        } else {
 
-            // $admin_user = User::where('id', $request['user_id'])->first();
+        } else {
 
             $user = new User();
             $user->name = $request['name'];
@@ -27,7 +31,7 @@ class UserController extends Controller
             $user->country_id = 1;//$request['country'];
             $user->city = $request['city'];
             $user->contact_number = $request['number'];
-            $user->subscribed_newletter = 0;//$request['newsletter'];
+            $user->subscribed_newsletter = 0;//$request['newsletter'];
             $user->role = 0;//$request['role'];
             $user->password = $request['password'];
 
@@ -57,7 +61,8 @@ class UserController extends Controller
 
     public function logout_user(Request $request)
     {
+        Auth::logout();
         Session::flush();
-        return redirect('/signin');
+        return redirect('/login');
     }
 }
