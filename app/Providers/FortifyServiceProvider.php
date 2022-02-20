@@ -41,7 +41,7 @@ class FortifyServiceProvider extends ServiceProvider
         $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
 
         RateLimiter::for('login', function (Request $request) {
-            return Limit::perMinute(5)->by($request->email . $request->ip());
+            return Limit::perMinute(5)->by($request->email.$request->ip());
         });
 
         RateLimiter::for('two-factor', function (Request $request) {
@@ -50,7 +50,7 @@ class FortifyServiceProvider extends ServiceProvider
 
 
         RateLimiter::for('login', function (Request $request) {
-            return Limit::perMinute(5)->by($request->email . $request->ip());
+            return Limit::perMinute(5)->by($request->email.$request->ip());
         });
 
         RateLimiter::for('two-factor', function (Request $request) {
